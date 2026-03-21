@@ -113,6 +113,17 @@ textarea{resize:vertical;min-height:52px;line-height:1.5}
 
 
 <script>
+
+// IME composition guard
+var _composing=false;
+document.addEventListener('compositionstart',function(){_composing=true;});
+document.addEventListener('compositionend',function(e){
+  _composing=false;
+  // fire the handler on the element that triggered compositionend
+  var ev=new Event('input',{bubbles:true});
+  e.target.dispatchEvent(ev);
+});
+
 var RYOS=['聞くこと','読むこと','話すこと〔やり取り〕','話すこと〔発表〕','書くこと'];
 var OBSS=['知識・技能','思考・判断・表現','主体的に学習に取り組む態度'];
 var EVCOL=[
@@ -244,30 +255,30 @@ function formHTML(){
 
   if(s===0) return h
     +'<div class="r2">'
-      +'<div class="fg"><label>校種</label><input oninput="u(\'gakko\',this.value)" value="'+esc(D.gakko)+'" placeholder="中学校"></div>'
-      +'<div class="fg"><label>学年</label><input oninput="u(\'gakunen\',this.value)" value="'+esc(D.gakunen)+'" placeholder="1"></div>'
+      +'<div class="fg"><label>校種</label><input oninput="if(!_composing){u(\'gakko\',this.value)}" value="'+esc(D.gakko)+'" placeholder="中学校"></div>'
+      +'<div class="fg"><label>学年</label><input oninput="if(!_composing){u(\'gakunen\',this.value)}" value="'+esc(D.gakunen)+'" placeholder="1"></div>'
     +'</div>'
     +'<div class="fg"><label>科目</label>'
-      +'<input oninput="u(\'kamoku\',this.value)" value="'+esc(D.kamoku)+'" placeholder="英語科">'
+      +'<input oninput="if(!_composing){u(\'kamoku\',this.value)}" value="'+esc(D.kamoku)+'" placeholder="英語科">'
       +'<label class="eigobox" style="margin-top:5px">'
         +'<input type="checkbox" onchange="u(\'eigoFlag\',this.checked)" '+(D.eigoFlag?'checked':'')+'>'
         +'<span>英語科の指導案を作成する<br><span style="font-size:9px;opacity:.8">（「読むこと」「書くこと」などの５領域の設定ができるようになります）</span></span>'
       +'</label>'
     +'</div>'
-    +'<div class="fg"><label>教材・単元</label><input oninput="u(\'kyozai\',this.value)" value="'+esc(D.kyozai)+'" placeholder="New Crown Lesson5"></div>'
+    +'<div class="fg"><label>教材・単元</label><input oninput="if(!_composing){u(\'kyozai\',this.value)}" value="'+esc(D.kyozai)+'" placeholder="New Crown Lesson5"></div>'
     +'<div class="fg"><label>授業日</label>'
       +'<div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center">'
-        +'<input oninput="u(\'nen\',this.value)" value="'+D.nen+'" placeholder="2024" style="width:48px"><span style="font-size:10px;color:#888">年</span>'
-        +'<input oninput="u(\'tsuki\',this.value)" value="'+D.tsuki+'" placeholder="10" style="width:28px"><span style="font-size:10px;color:#888">月</span>'
-        +'<input oninput="u(\'hi\',this.value)" value="'+D.hi+'" placeholder="21" style="width:28px"><span style="font-size:10px;color:#888">日</span>'
-        +'<input oninput="u(\'yobi\',this.value)" value="'+D.yobi+'" placeholder="木" style="width:26px"><span style="font-size:10px;color:#888">曜</span>'
-        +'<input oninput="u(\'jigen\',this.value)" value="'+D.jigen+'" placeholder="3" style="width:24px"><span style="font-size:10px;color:#888">限</span>'
+        +'<input oninput="if(!_composing){u(\'nen\',this.value)}" value="'+D.nen+'" placeholder="2024" style="width:48px"><span style="font-size:10px;color:#888">年</span>'
+        +'<input oninput="if(!_composing){u(\'tsuki\',this.value)}" value="'+D.tsuki+'" placeholder="10" style="width:28px"><span style="font-size:10px;color:#888">月</span>'
+        +'<input oninput="if(!_composing){u(\'hi\',this.value)}" value="'+D.hi+'" placeholder="21" style="width:28px"><span style="font-size:10px;color:#888">日</span>'
+        +'<input oninput="if(!_composing){u(\'yobi\',this.value)}" value="'+D.yobi+'" placeholder="木" style="width:26px"><span style="font-size:10px;color:#888">曜</span>'
+        +'<input oninput="if(!_composing){u(\'jigen\',this.value)}" value="'+D.jigen+'" placeholder="3" style="width:24px"><span style="font-size:10px;color:#888">限</span>'
       +'</div>'
     +'</div>'
-    +'<div class="fg"><label>授業者</label><input oninput="u(\'jusho\',this.value)" value="'+esc(D.jusho)+'" placeholder="山田 太郎"></div>'
+    +'<div class="fg"><label>授業者</label><input oninput="if(!_composing){u(\'jusho\',this.value)}" value="'+esc(D.jusho)+'" placeholder="山田 太郎"></div>'
     +'<div class="fg"><label>生徒数</label>'
       +'<div style="display:flex;align-items:center;gap:6px">'
-        +'<input type="number" min="1" max="99" oninput="u(\'seito\',this.value)" value="'+(D.seito||'')+'" placeholder="35" style="width:60px">'
+        +'<input type="number" min="1" max="99" oninput="if(!_composing){u(\'seito\',this.value)}" value="'+(D.seito||'')+'" placeholder="35" style="width:60px">'
         +'<span style="font-size:10px;color:#888">人</span>'
       +'</div>'
     +'</div>';
@@ -283,24 +294,24 @@ function formHTML(){
         +'<label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer">'
           +'<input type="radio" name="tt" '+(![45,50,55,65].includes(D.totalTime)?'checked':'')+'>その他'
         +'</label>'
-        +'<input type="number" min="1" max="120" value="'+D.totalTime+'" oninput="u(\'totalTime\',parseInt(this.value)||50)" style="width:50px">'
+        +'<input type="number" min="1" max="120" value="'+D.totalTime+'" oninput="if(!_composing){u(\'totalTime\',parseInt(this.value)||50)}" style="width:50px">'
       +'</div>'
     +'</div>'
     +'<div class="fg"><label>授業開始時刻</label>'
       +'<div style="display:flex;align-items:center;gap:6px">'
-        +'<input type="number" min="0" max="23" value="'+(D.startH||9)+'" oninput="u(\'startH\',parseInt(this.value)||0)" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
+        +'<input type="number" min="0" max="23" value="'+(D.startH||9)+'" oninput="if(!_composing){u(\'startH\',parseInt(this.value)||0)}" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
         +'<span style="font-size:13px;color:#555;font-weight:500">:</span>'
-        +'<input type="number" min="0" max="59" value="'+((D.startM===undefined||D.startM===null)?0:D.startM)+'" oninput="u(\'startM\',this.value===\'\'?0:parseInt(this.value))" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
+        +'<input type="number" min="0" max="59" value="'+((D.startM===undefined||D.startM===null)?0:D.startM)+'" oninput="if(!_composing){u(\'startM\',this.value===\'\'?0:parseInt(this.value))}" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
         +'<span style="font-size:10px;color:#888">（時計ビューで使用します）</span>'
       +'</div>'
     +'</div>'
     +'<div class="fg"><label>授業者のこだわりポイント</label>'
-      +'<textarea oninput="u(\'kodawari\',this.value)" placeholder="今日のこだわりを一言で">'+esc(D.kodawari)+'</textarea>'
+      +'<textarea oninput="if(!_composing){u(\'kodawari\',this.value)}" placeholder="今日のこだわりを一言で">'+esc(D.kodawari)+'</textarea>'
     +'</div>';
 
   if(s===2) return h
     +'<div class="fg"><label>単元の目標（文章）</label>'
-      +'<textarea style="min-height:72px" oninput="u(\'tMok\',this.value)" placeholder="単元の最後にできるようになること">'+esc(D.tMok)+'</textarea>'
+      +'<textarea style="min-height:72px" oninput="if(!_composing){u(\'tMok\',this.value)}" placeholder="単元の最後にできるようになること">'+esc(D.tMok)+'</textarea>'
     +'</div>'
     +'<div class="fg"><label>観点（複数選択可）</label><div style="margin-top:3px">'+obsCkr('tObs')+'</div></div>'
     +eigoRyoField('tRyo');
@@ -310,7 +321,7 @@ function formHTML(){
       var isFirst=(i===0),isLast=(i===D.sched.length-1);
       return '<tr>'
         +'<td>'+r.ji+'</td>'
-        +'<td style="text-align:left"><input type="text" oninput="uS('+i+',\'nai\',this.value)" value="'+esc(r.nai)+'" placeholder="学習内容"></td>'
+        +'<td style="text-align:left"><input type="text" oninput="if(!_composing){uS('+i+',\'nai\',this.value)}" value="'+esc(r.nai)+'" placeholder="学習内容"></td>'
         +'<td><input type="checkbox" onchange="uS('+i+',\'ch\',this.checked)" '+(r.ch?'checked':'')+'></td>'
         +'<td><input type="checkbox" onchange="uS('+i+',\'sh\',this.checked)" '+(r.sh?'checked':'')+'></td>'
         +'<td><input type="checkbox" onchange="uS('+i+',\'su\',this.checked)" '+(r.su?'checked':'')+'></td>'
@@ -326,7 +337,7 @@ function formHTML(){
     return h
       +'<div class="fg" style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'
         +'<label style="font-size:10px;color:#666;margin:0;white-space:nowrap">単元のコマ数</label>'
-        +'<input type="number" min="1" max="30" value="'+(D.schedCount||8)+'" oninput="setSchedCount(this.value)" style="width:52px;text-align:center">'
+        +'<input type="number" min="1" max="30" value="'+(D.schedCount||8)+'" oninput="if(!_composing){setSchedCount(this.value)}" style="width:52px;text-align:center">'
         +'<span style="font-size:10px;color:#888">コマ</span>'
       +'</div>'
       +'<div class="fg"><label>単元計画表　（本時の授業に◉をつける）</label>'
@@ -342,7 +353,7 @@ function formHTML(){
 
   if(s===4) return h
     +'<div class="fg"><label>本時の目標</label>'
-      +'<textarea oninput="u(\'hMok\',this.value)" placeholder="今日の授業でめざすこと">'+esc(D.hMok)+'</textarea>'
+      +'<textarea oninput="if(!_composing){u(\'hMok\',this.value)}" placeholder="今日の授業でめざすこと">'+esc(D.hMok)+'</textarea>'
     +'</div>'
     +'<div class="fg"><label>観点（複数選択可）</label><div style="margin-top:3px">'+obsCkr('hObs')+'</div></div>'
     +eigoRyoField('hRyo');
@@ -363,8 +374,8 @@ function formHTML(){
       return '<div class="fblk">'
         +'<div class="ftop">'
           +'<div class="fn">'+(i+1)+'</div>'
-          +'<input type="text" oninput="uF('+i+',\'t\',this.value)" value="'+esc(f.t)+'" placeholder="活動名" style="flex:1">'
-          +'<input type="number" min="1" max="60" value="'+(f.min||'')+'" oninput="uF('+i+',\'min\',parseInt(this.value)||0)" placeholder="分" style="text-align:center;width:42px">'
+          +'<input type="text" oninput="if(!_composing){uF('+i+',\'t\',this.value)}" value="'+esc(f.t)+'" placeholder="活動名" style="flex:1">'
+          +'<input type="number" min="1" max="60" value="'+(f.min||'')+'" oninput="if(!_composing){uF('+i+',\'min\',parseInt(this.value)||0)}" placeholder="分" style="text-align:center;width:42px">'
           +'<span style="font-size:9px;color:#888;margin-top:6px">分</span>'
           +'<div style="display:flex;flex-direction:column;gap:1px;margin-top:1px">'
             +'<button style="background:none;border:0.5px solid #ccc;border-radius:3px;width:18px;height:14px;font-size:8px;cursor:pointer;line-height:1;padding:0;color:'+(isFirst?'#ddd':'#666')+'" onclick="moveF('+i+',-1)" '+(isFirst?'disabled':'')+'>▲</button>'
@@ -372,7 +383,7 @@ function formHTML(){
           +'</div>'
           +'<button class="rmb" onclick="removeF('+i+')">×</button>'
         +'</div>'
-        +'<textarea style="min-height:44px;font-size:10px" oninput="uF('+i+',\'sub\',this.value)" placeholder="・1行目&#10;・2行目">'+esc(f.sub)+'</textarea>'
+        +'<textarea style="min-height:44px;font-size:10px" oninput="if(!_composing){uF('+i+',\'sub\',this.value)}" placeholder="・1行目&#10;・2行目">'+esc(f.sub)+'</textarea>'
         +'<div style="margin-top:5px;border-top:0.5px solid #eee;padding-top:5px">'
           +'<div style="font-size:9px;color:#888;margin-bottom:4px">この活動で評価をする場合は観点を選択</div>'
           +'<div>'+EVCOL_COLORS.map(function(col){
@@ -393,14 +404,14 @@ function formHTML(){
         +'<span class="'+(ok?'tok':'tov')+'">'+(used)+' / '+tot+' 分</span>'
       +'</div>'
       +'<div class="fg"><label>✎ 宿題・予習</label>'
-        +'<textarea style="min-height:38px" oninput="u(\'yadai\',this.value)" placeholder="・単語意味調べ">'+esc(D.yadai)+'</textarea>'
+        +'<textarea style="min-height:38px" oninput="if(!_composing){u(\'yadai\',this.value)}" placeholder="・単語意味調べ">'+esc(D.yadai)+'</textarea>'
       +'</div>'
       +'<div class="fg"><label>● 授業の流れ　<span style="font-size:9px;color:#aaa">（1行ずつサブ箇条書きを入力）</span></label>'
         +flowItems
         +'<button class="addb" onclick="addF()">＋ 活動を追加</button>'
       +'</div>'
       +'<div class="fg"><label>✎ 本日の課題・宿題</label>'
-        +'<textarea style="min-height:38px" oninput="u(\'kadai\',this.value)" placeholder="・新出単語の練習">'+esc(D.kadai)+'</textarea>'
+        +'<textarea style="min-height:38px" oninput="if(!_composing){u(\'kadai\',this.value)}" placeholder="・新出単語の練習">'+esc(D.kadai)+'</textarea>'
       +'</div>';
   }
 
@@ -409,12 +420,12 @@ function formHTML(){
       return '<div class="eb">'
         +'<div class="et" style="color:'+col.tc+'">'+col.lb+'</div>'
         +'<div class="fg"><label>評価規準（何ができるか）</label>'
-          +'<textarea style="min-height:38px" oninput="uEv('+i+',\'kij\',this.value)">'+esc(D.ev[i].kij)+'</textarea>'
+          +'<textarea style="min-height:38px" oninput="if(!_composing){uEv('+i+',\'kij\',this.value)}">'+esc(D.ev[i].kij)+'</textarea>'
         +'</div>'
         +'<div class="fg"><label>評価基準（どれくらいできるか）</label>'
           +'<div class="r2" style="margin-top:3px">'
-            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">A（十分満足）</div><textarea style="min-height:36px" oninput="uEv('+i+',\'aK\',this.value)">'+esc(D.ev[i].aK)+'</textarea></div>'
-            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">B（おおむね満足）</div><textarea style="min-height:36px" oninput="uEv('+i+',\'bK\',this.value)">'+esc(D.ev[i].bK)+'</textarea></div>'
+            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">A（十分満足）</div><textarea style="min-height:36px" oninput="if(!_composing){uEv('+i+',\'aK\',this.value)}">'+esc(D.ev[i].aK)+'</textarea></div>'
+            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">B（おおむね満足）</div><textarea style="min-height:36px" oninput="if(!_composing){uEv('+i+',\'bK\',this.value)}">'+esc(D.ev[i].bK)+'</textarea></div>'
           +'</div>'
         +'</div>'
         +evRyoField(i)

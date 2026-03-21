@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif}
+#app{display:flex;gap:8px;padding:8px;background:var(--color-background-tertiary,#f5f5f3);border-radius:12px;height:790px}
+#wiz{width:310px;flex-shrink:0;background:var(--color-background-primary,#fff);border:0.5px solid var(--color-border-tertiary,#e0e0e0);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
+#sbar{padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary,#e0e0e0);display:flex;flex-wrap:wrap;gap:4px}
+.sd{width:24px;height:24px;border-radius:50%;border:0.5px solid #ccc;background:#f5f5f5;color:#888;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .1s}
+.sd.act{background:#185FA5;color:#E6F1FB;border-color:#185FA5}
+.sd.dn{background:#0F6E56;color:#E1F5EE;border-color:#0F6E56}
+#fc{flex:1;overflow-y:auto;padding:12px}
+.sn{font-size:9px;color:#888}
+.st{font-size:13px;font-weight:500;color:#222;margin:2px 0 10px}
+.fg{margin-bottom:9px}
+.fg>label{display:block;font-size:10px;color:#666;margin-bottom:3px}
+input[type=text],input[type=number],textarea{width:100%;padding:5px 8px;border:0.5px solid #ccc;border-radius:6px;font-size:11px;font-family:sans-serif;color:#222;background:#fff;outline:none}
+input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:#185FA5}
+textarea{resize:vertical;min-height:52px;line-height:1.5}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ckr{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.ckr label{display:flex;align-items:center;gap:3px;font-size:10px;cursor:pointer;color:#333}
+.ckr input[type=checkbox],.ckr input[type=radio]{width:auto;accent-color:#185FA5}
+.eigobox{background:#f0f6ff;border:0.5px solid #B5D4F4;border-radius:6px;padding:5px 8px;margin-top:5px;display:flex;align-items:center;gap:5px;cursor:pointer}
+.eigobox input{width:auto;accent-color:#185FA5}
+.eigobox span{font-size:10px;color:#185FA5}
+.scht{width:100%;border-collapse:collapse;font-size:9px;table-layout:fixed}
+.scht th{background:#f0f0f0;padding:2px;border:0.5px solid #ccc;font-weight:500;text-align:center}
+.scht td{border:0.5px solid #ccc;padding:2px;vertical-align:middle;text-align:center}
+.scht input[type=text]{border:none;background:transparent;font-size:9px;width:100%;padding:0;min-width:0}
+.scht input[type=checkbox],.scht input[type=radio]{width:auto;accent-color:#185FA5}
+.fblk{border:0.5px solid #ddd;border-radius:8px;padding:7px;margin-bottom:6px;background:#fafafa}
+.ftop{display:flex;gap:5px;align-items:flex-start;margin-bottom:4px}
+.fn{width:16px;height:16px;border-radius:50%;background:#185FA5;color:#E6F1FB;font-size:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
+.rmb{background:none;border:none;cursor:pointer;font-size:13px;color:#bbb;line-height:1;padding:2px;margin-top:2px}
+.rmb:hover{color:#A32D2D}
+.addb{width:100%;border:0.5px dashed #ccc;border-radius:8px;padding:4px;font-size:10px;color:#888;cursor:pointer;background:none;margin-top:4px}
+.addb:hover{background:#f5f5f5}
+.eb{border:0.5px solid #ddd;border-radius:8px;padding:8px;margin-bottom:7px}
+.et{font-size:10px;font-weight:500;margin-bottom:6px}
+.tbar{font-size:9px;color:#666;padding:4px 7px;border-radius:6px;border:0.5px solid #ddd;background:#f5f5f5;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tok{color:#0F6E56;font-weight:500}
+.tov{color:#A32D2D;font-weight:500}
+.hint{font-size:9px;color:#888;background:#f0f6ff;padding:4px 8px;border-radius:6px;margin-bottom:8px;border-left:2px solid #185FA5}
+#nav{padding:8px 10px;border-top:0.5px solid #e0e0e0;display:flex;justify-content:space-between;align-items:center}
+.np{font-size:10px;color:#888}
+.nb{display:flex;gap:5px}
+#prv{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:8px;background:#fff;border:0.5px solid #e0e0e0;border-radius:12px}
+@media print{#app{display:none!important}#prt{display:block!important}}
+#prt{display:none}
+
+.sec-highlight{
+  position:relative;
+}
+.sec-highlight::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border:2.5px solid #E24B4A;
+  border-radius:2px;
+  pointer-events:none;
+  animation:sec-pulse 1.8s ease-in-out infinite;
+  z-index:9999;
+}
+@keyframes sec-pulse{
+  0%,100%{box-shadow:inset 0 0 6px rgba(226,75,74,0.10);}
+  50%{box-shadow:inset 0 0 12px rgba(226,75,74,0.25);}
+}
+</style>
+</head>
+<body>
+
+<div id="landing" style="display:flex;align-items:center;justify-content:center;min-height:600px;padding:20px;background:var(--color-background-tertiary,#f5f5f3);border-radius:12px">
+  <div style="background:#fff;border-radius:16px;border:0.5px solid #e0e0e0;padding:40px 36px;max-width:440px;width:100%;text-align:center">
+    <div style="font-size:28px;margin-bottom:6px">📋</div>
+    <div style="font-size:20px;font-weight:500;color:#222;margin-bottom:4px">れっすん・ぷらん</div>
+    <div style="font-size:12px;color:#888;margin-bottom:32px;letter-spacing:.5px">Side-B メーカー　v0.8-beta</div>
+
+    <button onclick="startBlank()" style="display:block;width:100%;padding:14px 16px;margin-bottom:10px;background:#185FA5;color:#E6F1FB;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;text-align:left">
+      ✏️　新規作成（空白）
+      <div style="font-size:10px;font-weight:400;opacity:.8;margin-top:2px">すべて空白のフォームからスタートします</div>
+    </button>
+
+    <button onclick="startSample()" style="display:block;width:100%;padding:14px 16px;margin-bottom:10px;background:#0F6E56;color:#E1F5EE;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;text-align:left">
+      📝　新規作成（サンプル入り）
+      <div style="font-size:10px;font-weight:400;opacity:.8;margin-top:2px">記入例が入った状態で始められます</div>
+    </button>
+
+    <label style="display:block;width:100%;padding:14px 16px;margin-bottom:0;background:#fff;color:#444;border:0.5px solid #ccc;border-radius:10px;font-size:13px;font-weight:400;cursor:pointer;text-align:left">
+      📂　保存データを読み込む（JSON）
+      <div style="font-size:10px;color:#888;margin-top:2px">以前保存した JSON ファイルを選択して再編集します</div>
+      <input type="file" accept=".json" onchange="loadAndStart(event)" style="display:none">
+    </label>
+
+    <div id="landmsg" style="font-size:11px;color:#A32D2D;margin-top:12px;min-height:16px"></div>
+  </div>
+</div>
+<div id="app" style="display:none">
+  <div id="wiz">
+    <div style="padding:7px 10px;border-bottom:0.5px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between"><button onclick="goTop()" style="font-size:10px;color:#888;background:none;border:0.5px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer">← トップへ</button><span style="font-size:10px;font-weight:500;color:#555">れっすん・ぷらん Side-B</span></div><div id="sbar"></div>
+    <div id="fc"></div>
+    <div id="nav">
+      <span class="np" id="prg"></span>
+      <div class="nb">
+        <button id="bp" onclick="go(-1)">← 前へ</button>
+        <button id="bn" onclick="go(1)">次へ →</button>
+      </div>
+    </div>
+  </div>
+  <div id="prv"><div id="pvb"></div></div>
+</div>
+<div id="prt"><div id="ppa"></div></div>
+
+
+<script>
+var RYOS=['聞くこと','読むこと','話すこと〔やり取り〕','話すこと〔発表〕','書くこと'];
+var OBSS=['知識・技能','思考・判断・表現','主体的に学習に取り組む態度'];
+var EVCOL=[
+  {bg:'#FBEAF0',tc:'#72243E',lb:'知識・技能'},
+  {bg:'#EEEDFE',tc:'#534AB7',lb:'思考・判断・表現'},
+  {bg:'#FAEEDA',tc:'#854F0B',lb:'主体的に学習に取り組む態度'}
+];
+var FCOLS=['#E6F1FB','#E1F5EE','#EEEDFE','#FAEEDA','#FAECE7','#EAF3DE','#FBEAF0','#E6F1FB','#E1F5EE'];
+var FTCOLS=['#0C447C','#085041','#3C3489','#633806','#712B13','#27500A','#72243E','#0C447C','#085041'];
+
+var SAMPLE_D={
+  step:0,
+  gakko:'中学校',gakunen:'1',kamoku:'英語科',kyozai:'New Crown 1 Lesson5',
+  nen:'2024',tsuki:'10',hi:'21',yobi:'木',jigen:'3',jusho:'山田 太郎',seito:'35',schedCount:8,
+  eigoFlag:true,
+  totalTime:50,startH:9,startM:45,kodawari:'意図を持った指名をする！',
+  tMok:'自分の学校を紹介するために、学校生活や行事について事実や自分の考え・気持ちなどを整理し、簡単な語句や文を用いてまとまりのある文章を書いている。',
+  tObs:['思考・判断・表現'],tRyo:['書くこと'],
+  sched:Array.from({length:8},(_,i)=>({
+    ji:i+1,
+    nai:['Get 1 現在進行形','Get 2 疑問文','USE Read 説明文','USE Write メール','LISTEN3 映画の紹介','TALK3 青いTシャツ','GET Plus 4','Lesson5まとめ'][i],
+    ch:i<5,sh:i>=3,su:i>=3,ima:i===2
+  })),
+  hMok:'現在進行形の肯定文を使って、絵を描写しよう！',
+  hObs:['知識・技能'],hRyo:['書くこと','話すこと〔発表〕'],
+  yadai:'・単語意味調べワークシートを埋めてくる',
+  flow:[
+    {t:'あいさつ＆Small Talk',sub:'・英語で挨拶をする',min:5,hyoka:[]},
+    {t:'レッスンの新出単語',sub:'・文字と音をつなげる',min:5,hyoka:[]},
+    {t:'導入',sub:'・ジャイアンからのLINEメッセージを読む',min:5,hyoka:[]},
+    {t:'説明①（原時英語で）',sub:'・ing形の確認\n・be動詞の選択\n・現在形との違い',min:10,hyoka:[]},
+    {t:'練習',sub:'・全体でパタンプラクティス（動詞のing確認・発音解説）\n・全体→ペアで絵を描写練習（6枚→誰のことかを当てる）',min:15,hyoka:['知識・技能']},
+    {t:'活動・まとめ・あいさつ',sub:'・ジャイアンへのLINE返信を考える\n・グループ/全体シェア',min:10,hyoka:['思考・判断・表現']}
+  ],
+  kadai:'・レッスンの新出単語の練習（文字→発音）',
+  ev:[
+    {kij:'現在進行形の肯定文の特徴やきまりに関する事項を理解している。',aK:'6枚すべての絵について正しい英文が書けている。',bK:'3〜5枚の絵について正しい英文が書けている。',ryo:['書くこと']},
+    {kij:'絵の特徴を捉え、現在進行形を用いて相手に伝わるよう工夫して描写している。',aK:'聞き手の反応を見て表現を調整できる。',bK:'絵の主な特徴を現在進行形で説明できる。',ryo:['話すこと〔発表〕']},
+    {kij:'',aK:'',bK:'',ryo:[]}
+  ],
+  evType:'kei',
+  jikoHyoka:''
+};
+
+var D={
+  step:0,
+  gakko:'',gakunen:'',kamoku:'',kyozai:'',
+  nen:'',tsuki:'',hi:'',yobi:'',jigen:'',jusho:'',seito:'',
+  eigoFlag:false,
+  totalTime:50,kodawari:'',
+  tMok:'',tObs:[],tRyo:[],
+  schedCount:8,
+  sched:Array.from({length:8},function(_,i){return {ji:i+1,nai:'',ch:false,sh:false,su:false,ima:false};}),
+  hMok:'',hObs:[],hRyo:[],
+  yadai:'',
+  flow:[{t:'',sub:'',min:5,hyoka:[]}],
+  kadai:'',
+  ev:[
+    {kij:'',aK:'',bK:'',ryo:[]},
+    {kij:'',aK:'',bK:'',ryo:[]},
+    {kij:'',aK:'',bK:'',ryo:[]}
+  ],
+  evType:'kei'
+}
+
+var STS=[
+  {t:'基本情報',s:'校種・学年・科目など'},
+  {t:'こだわり・授業時間',s:'こだわりポイントと授業時間'},
+  {t:'単元の目標',s:'目標文・観点・領域'},
+  {t:'単元計画',s:'計画表と本時の位置'},
+  {t:'本時の目標',s:'今日の目標・観点・領域'},
+  {t:'授業の流れ',s:'活動・時間・サブ箇条書き'},
+  {t:'評価ポイント',s:'評価規準・基準・領域'},
+  {t:'完成・印刷',s:'Side-B 完成！'}
+];
+
+function isEigo(){return D.eigoFlag;}
+function u(k,v){D[k]=v;render();}
+function uS(i,k,v){D.sched[i][k]=v;if(k==='ima'&&v)D.sched.forEach((r,j)=>{if(j!==i)r.ima=false;});render();}
+function uEv(i,k,v){D.ev[i][k]=v;render();}
+function uF(i,k,v){D.flow[i][k]=v;render();}
+function addF(){D.flow.push({t:'',sub:'',min:5,hyoka:[]});render();}
+function moveF(i,d){var n=i+d;if(n<0||n>=D.flow.length)return;var tmp=D.flow[i];D.flow[i]=D.flow[n];D.flow[n]=tmp;render();}
+function removeF(i){D.flow.splice(i,1);render();}
+function togA(arr,v){var x=arr.indexOf(v);x>=0?arr.splice(x,1):arr.push(v);render();}
+function togObs(k,v){togA(D[k],v);}
+function togRyo(k,v){togA(D[k],v);}
+function togEvR(i,v){togA(D.ev[i].ryo,v);}
+function uFH(i,v){togA(D.flow[i].hyoka,v);}
+function moveS(i,d){var n=i+d;if(n<0||n>=D.sched.length)return;var tmp=D.sched[i];D.sched[i]=D.sched[n];D.sched[n]=tmp;D.sched.forEach(function(r,j){r.ji=j+1;});render();}
+
+function setSchedCount(n){
+  n=Math.max(1,Math.min(30,parseInt(n)||8));
+  D.schedCount=n;
+  // 行を増減
+  while(D.sched.length<n) D.sched.push({ji:D.sched.length+1,nai:'',ch:false,sh:false,su:false,ima:false});
+  if(D.sched.length>n) D.sched=D.sched.slice(0,n);
+  // 行番号を振り直す
+  D.sched.forEach((r,i)=>{r.ji=i+1;});
+  render();
+}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function ph(v,p){return(!v||!v.trim())?'<span style="color:#ccc;font-style:italic">'+(p||'　')+'</span>':esc(v);}
+function ds(){return[D.nen?D.nen+'年':'',D.tsuki?D.tsuki+'月':'',D.hi?D.hi+'日':'',D.yobi?'('+D.yobi+')':'',D.jigen?D.jigen+'限':''].filter(x=>x).join('')||'—';}
+function usedMin(){return D.flow.reduce((s,f)=>s+(parseInt(f.min)||0),0);}
+
+function obsCkr(key){
+  return OBSS.map(function(o){return '<label style="display:flex;align-items:center;gap:4px;font-size:10px;cursor:pointer;color:#333;margin-bottom:3px"><input type="checkbox" onchange="togObs(\''+key+'\',\''+o+'\')" '+(D[key].includes(o)?'checked':'')+' style="width:auto;accent-color:#185FA5">'+o+'</label>';}).join('');
+}
+function ryoCkr(key){
+  return RYOS.map(function(r){return '<label style="display:flex;align-items:center;gap:4px;font-size:10px;cursor:pointer;color:#333;margin-bottom:3px"><input type="checkbox" onchange="togRyo(\''+key+'\',\''+r+'\')" '+(D[key].includes(r)?'checked':'')+' style="width:auto;accent-color:#185FA5">'+r+'</label>';}).join('');
+}
+
+// ===== FORM =====
+function eigoRyoField(key){
+  if(!isEigo()) return '<div class="hint">領域の選択は「英語科として扱う」にチェックした場合のみ表示されます</div>';
+  return '<div class="fg"><label>領域</label><div style="margin-top:3px">'+ryoCkr(key)+'</div></div>';
+}
+function evRyoField(i){
+  if(!isEigo()) return '';
+  return '<div class="fg"><label>領域</label><div class="ckr">'
+    +RYOS.map(function(r){
+      return '<label><input type="checkbox" onchange="togEvR('+i+',\''+r+'\')" '+(D.ev[i].ryo.includes(r)?'checked':'')+'>'+r+'</label>';
+    }).join('')+'</div></div>';
+}
+function formHTML(){
+  var s=D.step;
+  var h='<div class="sn">STEP '+(s+1)+' / '+STS.length+'</div><div class="st">'+STS[s].t+'</div>';
+
+  if(s===0) return h
+    +'<div class="r2">'
+      +'<div class="fg"><label>校種</label><input oninput="u(\'gakko\',this.value)" value="'+esc(D.gakko)+'" placeholder="中学校"></div>'
+      +'<div class="fg"><label>学年</label><input oninput="u(\'gakunen\',this.value)" value="'+esc(D.gakunen)+'" placeholder="1"></div>'
+    +'</div>'
+    +'<div class="fg"><label>科目</label>'
+      +'<input oninput="u(\'kamoku\',this.value)" value="'+esc(D.kamoku)+'" placeholder="英語科">'
+      +'<label class="eigobox" style="margin-top:5px">'
+        +'<input type="checkbox" onchange="u(\'eigoFlag\',this.checked)" '+(D.eigoFlag?'checked':'')+'>'
+        +'<span>英語科の指導案を作成する<br><span style="font-size:9px;opacity:.8">（「読むこと」「書くこと」などの５領域の設定ができるようになります）</span></span>'
+      +'</label>'
+    +'</div>'
+    +'<div class="fg"><label>教材・単元</label><input oninput="u(\'kyozai\',this.value)" value="'+esc(D.kyozai)+'" placeholder="New Crown Lesson5"></div>'
+    +'<div class="fg"><label>授業日</label>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center">'
+        +'<input oninput="u(\'nen\',this.value)" value="'+D.nen+'" placeholder="2024" style="width:48px"><span style="font-size:10px;color:#888">年</span>'
+        +'<input oninput="u(\'tsuki\',this.value)" value="'+D.tsuki+'" placeholder="10" style="width:28px"><span style="font-size:10px;color:#888">月</span>'
+        +'<input oninput="u(\'hi\',this.value)" value="'+D.hi+'" placeholder="21" style="width:28px"><span style="font-size:10px;color:#888">日</span>'
+        +'<input oninput="u(\'yobi\',this.value)" value="'+D.yobi+'" placeholder="木" style="width:26px"><span style="font-size:10px;color:#888">曜</span>'
+        +'<input oninput="u(\'jigen\',this.value)" value="'+D.jigen+'" placeholder="3" style="width:24px"><span style="font-size:10px;color:#888">限</span>'
+      +'</div>'
+    +'</div>'
+    +'<div class="fg"><label>授業者</label><input oninput="u(\'jusho\',this.value)" value="'+esc(D.jusho)+'" placeholder="山田 太郎"></div>'
+    +'<div class="fg"><label>生徒数</label>'
+      +'<div style="display:flex;align-items:center;gap:6px">'
+        +'<input type="number" min="1" max="99" oninput="u(\'seito\',this.value)" value="'+(D.seito||'')+'" placeholder="35" style="width:60px">'
+        +'<span style="font-size:10px;color:#888">人</span>'
+      +'</div>'
+    +'</div>';
+
+  if(s===1) return h
+    +'<div class="fg"><label>授業時間（分）</label>'
+      +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
+        +[45,50,55,65].map(function(m){
+          return '<label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer">'
+            +'<input type="radio" name="tt" onchange="u(\'totalTime\','+m+')" '+(D.totalTime===m?'checked':'')+'>'
+            +m+'分</label>';
+        }).join('')
+        +'<label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer">'
+          +'<input type="radio" name="tt" '+(![45,50,55,65].includes(D.totalTime)?'checked':'')+'>その他'
+        +'</label>'
+        +'<input type="number" min="1" max="120" value="'+D.totalTime+'" oninput="u(\'totalTime\',parseInt(this.value)||50)" style="width:50px">'
+      +'</div>'
+    +'</div>'
+    +'<div class="fg"><label>授業開始時刻</label>'
+      +'<div style="display:flex;align-items:center;gap:6px">'
+        +'<input type="number" min="0" max="23" value="'+(D.startH||9)+'" oninput="u(\'startH\',parseInt(this.value)||0)" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
+        +'<span style="font-size:13px;color:#555;font-weight:500">:</span>'
+        +'<input type="number" min="0" max="59" value="'+((D.startM===undefined||D.startM===null)?0:D.startM)+'" oninput="u(\'startM\',this.value===\'\'?0:parseInt(this.value))" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
+        +'<span style="font-size:10px;color:#888">（時計ビューで使用します）</span>'
+      +'</div>'
+    +'</div>'
+    +'<div class="fg"><label>授業者のこだわりポイント</label>'
+      +'<textarea oninput="u(\'kodawari\',this.value)" placeholder="今日のこだわりを一言で">'+esc(D.kodawari)+'</textarea>'
+    +'</div>';
+
+  if(s===2) return h
+    +'<div class="fg"><label>単元の目標（文章）</label>'
+      +'<textarea style="min-height:72px" oninput="u(\'tMok\',this.value)" placeholder="単元の最後にできるようになること">'+esc(D.tMok)+'</textarea>'
+    +'</div>'
+    +'<div class="fg"><label>観点（複数選択可）</label><div style="margin-top:3px">'+obsCkr('tObs')+'</div></div>'
+    +eigoRyoField('tRyo');
+
+  if(s===3){
+    var rows=D.sched.map(function(r,i){
+      var isFirst=(i===0),isLast=(i===D.sched.length-1);
+      return '<tr>'
+        +'<td>'+r.ji+'</td>'
+        +'<td style="text-align:left"><input type="text" oninput="uS('+i+',\'nai\',this.value)" value="'+esc(r.nai)+'" placeholder="学習内容"></td>'
+        +'<td><input type="checkbox" onchange="uS('+i+',\'ch\',this.checked)" '+(r.ch?'checked':'')+'></td>'
+        +'<td><input type="checkbox" onchange="uS('+i+',\'sh\',this.checked)" '+(r.sh?'checked':'')+'></td>'
+        +'<td><input type="checkbox" onchange="uS('+i+',\'su\',this.checked)" '+(r.su?'checked':'')+'></td>'
+        +'<td><input type="radio" name="ima" onchange="uS('+i+',\'ima\',true)" '+(r.ima?'checked':'')+'></td>'
+        +'<td style="padding:1px 2px">'
+          +'<div style="display:flex;flex-direction:column;gap:1px;align-items:center">'
+            +'<button style="background:none;border:0.5px solid #ccc;border-radius:2px;width:18px;height:12px;font-size:7px;cursor:pointer;line-height:1;padding:0;color:'+(isFirst?'#ddd':'#666')+'" onclick="moveS('+i+',-1)" '+(isFirst?'disabled':'')+'>▲</button>'
+            +'<button style="background:none;border:0.5px solid #ccc;border-radius:2px;width:18px;height:12px;font-size:7px;cursor:pointer;line-height:1;padding:0;color:'+(isLast?'#ddd':'#666')+'" onclick="moveS('+i+',1)" '+(isLast?'disabled':'')+'>▼</button>'
+          +'</div>'
+        +'</td>'
+        +'</tr>';
+    }).join('');
+    return h
+      +'<div class="fg" style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'
+        +'<label style="font-size:10px;color:#666;margin:0;white-space:nowrap">単元のコマ数</label>'
+        +'<input type="number" min="1" max="30" value="'+(D.schedCount||8)+'" oninput="setSchedCount(this.value)" style="width:52px;text-align:center">'
+        +'<span style="font-size:10px;color:#888">コマ</span>'
+      +'</div>'
+      +'<div class="fg"><label>単元計画表　（本時の授業に◉をつける）</label>'
+        +'<table class="scht"><thead><tr>'
+          +'<th style="width:18px">時</th><th>学習内容</th>'
+          +'<th style="width:22px">知技</th><th style="width:22px">思考</th><th style="width:22px">主体</th>'
+          +'<th style="width:28px">本時</th>'
+          +'<th style="width:30px">順序</th>'
+        +'</tr></thead><tbody>'+rows+'</tbody></table>'
+      +'</div>'
+      +'<div style="font-size:9px;color:#666;background:#f5f5f5;border-radius:4px;padding:6px 8px;margin-top:6px;line-height:1.6">本時で選択されている観点のみ右側の「本時の評価ポイント」で濃く表示されます。</div>';
+  }
+
+  if(s===4) return h
+    +'<div class="fg"><label>本時の目標</label>'
+      +'<textarea oninput="u(\'hMok\',this.value)" placeholder="今日の授業でめざすこと">'+esc(D.hMok)+'</textarea>'
+    +'</div>'
+    +'<div class="fg"><label>観点（複数選択可）</label><div style="margin-top:3px">'+obsCkr('hObs')+'</div></div>'
+    +eigoRyoField('hRyo');
+
+  if(s===5){
+    var used=usedMin(),tot=D.totalTime||50,ok=used<=tot;
+    var pct=Math.min(Math.round(used/tot*100),100);
+    var EVCOL_COLORS=[{tc:'#72243E',bg:'#FBEAF0',lb:'知識・技能'},{tc:'#534AB7',bg:'#EEEDFE',lb:'思考・判断・表現'},{tc:'#854F0B',bg:'#FAEEDA',lb:'主体的に学習に取り組む態度'}];
+    var flowItems=D.flow.map(function(f,i){
+      var hyokaChecks=EVCOL_COLORS.map(function(col){
+        var checked=(f.hyoka||[]).includes(col.lb);
+        return '<label style="display:flex;align-items:center;gap:3px;font-size:9px;cursor:pointer;padding:1px 5px;border-radius:10px;border:0.5px solid '+(checked?col.tc:'#ddd')+';background:'+(checked?col.bg:'transparent')+';color:'+(checked?col.tc:'#aaa')+'">'
+          +'<input type="checkbox" style="width:auto;accent-color:'+col.tc+'" onchange="uFH('+i+',\''+col.lb+'\');this.closest(\'.fblk\').querySelectorAll(\'label\').forEach(function(l){var inp=l.querySelector(\'input[type=checkbox]\');if(inp){var lb=inp.closest(\'label\');var cols=[{tc:\'#27500A\',bg:\'#EAF3DE\',lb:\'知識・技能\'},{tc:\'#3C3489\',bg:\'#EEEDFE\',lb:\'思考・判断・表現\'},{tc:\'#633806\',bg:\'#FAEEDA\',lb:\'主体的に学習に取り組む態度\'}];var c2=cols.find(function(x){return x.lb===inp.value;});if(c2){lb.style.borderColor=inp.checked?c2.tc:\'#ddd\';lb.style.background=inp.checked?c2.bg:\'transparent\';lb.style.color=inp.checked?c2.tc:\'#aaa\';}}})" value="'+col.lb+'" '+(checked?'checked':'')+'>'
+          +col.lb
+        +'</label>';
+      }).join('');
+      var isFirst=(i===0),isLast=(i===D.flow.length-1);
+      return '<div class="fblk">'
+        +'<div class="ftop">'
+          +'<div class="fn">'+(i+1)+'</div>'
+          +'<input type="text" oninput="uF('+i+',\'t\',this.value)" value="'+esc(f.t)+'" placeholder="活動名" style="flex:1">'
+          +'<input type="number" min="1" max="60" value="'+(f.min||'')+'" oninput="uF('+i+',\'min\',parseInt(this.value)||0)" placeholder="分" style="text-align:center;width:42px">'
+          +'<span style="font-size:9px;color:#888;margin-top:6px">分</span>'
+          +'<div style="display:flex;flex-direction:column;gap:1px;margin-top:1px">'
+            +'<button style="background:none;border:0.5px solid #ccc;border-radius:3px;width:18px;height:14px;font-size:8px;cursor:pointer;line-height:1;padding:0;color:'+(isFirst?'#ddd':'#666')+'" onclick="moveF('+i+',-1)" '+(isFirst?'disabled':'')+'>▲</button>'
+            +'<button style="background:none;border:0.5px solid #ccc;border-radius:3px;width:18px;height:14px;font-size:8px;cursor:pointer;line-height:1;padding:0;color:'+(isLast?'#ddd':'#666')+'" onclick="moveF('+i+',1)" '+(isLast?'disabled':'')+'>▼</button>'
+          +'</div>'
+          +'<button class="rmb" onclick="removeF('+i+')">×</button>'
+        +'</div>'
+        +'<textarea style="min-height:44px;font-size:10px" oninput="uF('+i+',\'sub\',this.value)" placeholder="・1行目&#10;・2行目">'+esc(f.sub)+'</textarea>'
+        +'<div style="margin-top:5px;border-top:0.5px solid #eee;padding-top:5px">'
+          +'<div style="font-size:9px;color:#888;margin-bottom:4px">この活動で評価をする場合は観点を選択</div>'
+          +'<div>'+EVCOL_COLORS.map(function(col){
+            var checked=(f.hyoka||[]).includes(col.lb);
+            return '<label style="display:flex;align-items:center;gap:4px;font-size:10px;cursor:pointer;margin-bottom:3px">'
+              +'<input type="checkbox" style="width:auto;accent-color:'+col.tc+'" onchange="uFH('+i+',\''+col.lb+'\');render()" value="'+col.lb+'" '+(checked?'checked':'')+'>'
+              +col.lb
+            +'</label>';
+          }).join('')+'</div>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+    return h
+      +'<div class="tbar">'
+        +'<div style="flex:1;height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden">'
+          +'<div style="width:'+pct+'%;height:100%;background:'+(ok?'#0F6E56':'#A32D2D')+';border-radius:3px"></div>'
+        +'</div>'
+        +'<span class="'+(ok?'tok':'tov')+'">'+(used)+' / '+tot+' 分</span>'
+      +'</div>'
+      +'<div class="fg"><label>✎ 宿題・予習</label>'
+        +'<textarea style="min-height:38px" oninput="u(\'yadai\',this.value)" placeholder="・単語意味調べ">'+esc(D.yadai)+'</textarea>'
+      +'</div>'
+      +'<div class="fg"><label>● 授業の流れ　<span style="font-size:9px;color:#aaa">（1行ずつサブ箇条書きを入力）</span></label>'
+        +flowItems
+        +'<button class="addb" onclick="addF()">＋ 活動を追加</button>'
+      +'</div>'
+      +'<div class="fg"><label>✎ 本日の課題・宿題</label>'
+        +'<textarea style="min-height:38px" oninput="u(\'kadai\',this.value)" placeholder="・新出単語の練習">'+esc(D.kadai)+'</textarea>'
+      +'</div>';
+  }
+
+  if(s===6){
+    var blocks=EVCOL.map(function(col,i){
+      return '<div class="eb">'
+        +'<div class="et" style="color:'+col.tc+'">'+col.lb+'</div>'
+        +'<div class="fg"><label>評価規準（何ができるか）</label>'
+          +'<textarea style="min-height:38px" oninput="uEv('+i+',\'kij\',this.value)">'+esc(D.ev[i].kij)+'</textarea>'
+        +'</div>'
+        +'<div class="fg"><label>評価基準（どれくらいできるか）</label>'
+          +'<div class="r2" style="margin-top:3px">'
+            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">A（十分満足）</div><textarea style="min-height:36px" oninput="uEv('+i+',\'aK\',this.value)">'+esc(D.ev[i].aK)+'</textarea></div>'
+            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">B（おおむね満足）</div><textarea style="min-height:36px" oninput="uEv('+i+',\'bK\',this.value)">'+esc(D.ev[i].bK)+'</textarea></div>'
+          +'</div>'
+        +'</div>'
+        +evRyoField(i)
+      +'</div>';
+    }).join('');
+    var evTypeBlock='<div class="fg" style="background:#E6F1FB;border-radius:6px;padding:8px 10px;margin-bottom:10px"><label style="font-size:10px;color:#185FA5;font-weight:500;display:block;margin-bottom:6px">本時の評価を成績に</label>'
+      +'<div class="ckr">'
+        +'<label><input type="radio" name="et" onchange="u(\'evType\',\'so\')" '+(D.evType==='so'?'checked':'')+'>入れる（総括的評価）</label>'
+        +'<label><input type="radio" name="et" onchange="u(\'evType\',\'kei\')" '+(D.evType==='kei'?'checked':'')+'>入れない（形成的評価）</label>'
+      +'</div>'
+    +'</div>';
+    return h+evTypeBlock+blocks;
+  }
+
+  if(s===7) return h
+    +'<div style="padding:4px 0 16px">'
+      +'<div style="font-size:32px;margin-bottom:6px;color:#0F6E56;text-align:center">✓</div>'
+      +'<div style="font-size:14px;font-weight:500;color:#222;margin-bottom:2px;text-align:center">Side-B 完成！</div>'
+      +'<div style="font-size:11px;color:#888;margin-bottom:18px;text-align:center">右側のプレビューを確認してください。</div>'
+      +'<button style="padding:10px 12px;font-size:12px;font-weight:500;background:#185FA5;color:#E6F1FB;border:none;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:8px;text-align:left" onclick="openFullscreen()">⛶　全画面で表示</button>'
+      +'<button style="padding:10px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:8px;text-align:left" onclick="doPrint()">🖨　印刷する</button>'
+      +'<button style="padding:10px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:16px;text-align:left" onclick="doExportPDF()">📄　PDFで書き出す</button>'
+      +'<div style="font-size:10px;color:#666;font-weight:500;margin-bottom:6px;padding-bottom:4px;border-bottom:0.5px solid #eee">💾 データを保存する</div>'
+      +'<button style="padding:8px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:6px;text-align:left" onclick="doSave()">💾　このデータを保存する（JSON）</button>'
+      +'<div style="font-size:10px;color:#aaa;padding:0 2px;margin-bottom:16px">保存したJSONファイルはトップ画面から読み込んで再編集できます。</div>'
+      +'<button style="font-size:11px;padding:6px 12px;color:#888;border:0.5px solid #ddd;background:none;border-radius:8px;cursor:pointer;width:100%;margin-top:8px" onclick="goStep(0)">← 最初のステップに戻る</button>'
+    +'</div>';
+
+  return h;
+}
+
+// ===== TAG HELPERS =====
+function obsTags(arr){
+  var OBS_COL={'知識・技能':{bg:'#FBEAF0',tc:'#72243E'},'思考・判断・表現':{bg:'#EEEDFE',tc:'#534AB7'},'主体的に学習に取り組む態度':{bg:'#FAEEDA',tc:'#854F0B'}};
+  return arr.map(function(o){var col=OBS_COL[o]||{bg:'#E6F1FB',tc:'#0C447C'};return '<span style="background:'+col.bg+';color:'+col.tc+';font-size:5px;padding:1px 5px;border-radius:8px;font-weight:500">'+o+'</span>';}).join('');
+}
+function ryoTags(arr){
+  var RYO_COL={
+    '読むこと':           {bg:'#185FA5',tc:'#fff'},
+    '聞くこと':           {bg:'#0F6E56',tc:'#fff'},
+    '話すこと〔やり取り〕':{bg:'#C07800',tc:'#fff'},
+    '話すこと〔発表〕':   {bg:'#B8335E',tc:'#fff'},
+    '書くこと':           {bg:'#8B7D00',tc:'#fff'}
+  };
+  return arr.map(function(r){var col=RYO_COL[r]||{bg:'#444',tc:'#fff'};return '<span style="background:'+col.bg+';color:'+col.tc+';font-size:5px;padding:1px 5px;border-radius:8px;font-weight:500">'+r+'</span>';}).join('');
+}
+function metaRow(obsArr,ryoArr){
+  if(!obsArr.length&&!ryoArr.length)return'';
+  var parts=[];
+  if(obsArr.length)parts.push('<span style="font-size:5px;color:#888;white-space:nowrap">観点：</span>'+obsTags(obsArr));
+  if(ryoArr.length)parts.push('<span style="font-size:5px;color:#888;white-space:nowrap">領域：</span>'+ryoTags(ryoArr));
+  return '<div style="border-top:0.5px solid #B5D4F4;padding-top:3px;display:flex;flex-wrap:wrap;gap:2px;align-items:center;margin-top:4px">'+parts.join('<span style="font-size:5px;color:#aaa;margin:0 2px">/</span>')+'</div>';
+}
+
+// ===== PREVIEW =====
+function pvB(){
+  var d=D, eigo=isEigo();
+  var SW=680,SH=482;
+
+  var schR=d.sched.map(r=>'<tr style="height:'+(Math.floor(100/Math.max(d.sched.length,1)))+'%;'+(r.ima?'background:#fffce0':'')+'">'
+    +'<td style="border:0.5px solid #ccc;padding:1px 2px;text-align:center;font-size:6px;font-weight:'+(r.ima?700:400)+'">'+(r.ima?'▶':'')+r.ji+'</td>'
+    +'<td style="border:0.5px solid #ccc;padding:1px 3px;font-size:6px;text-align:left">'+esc(r.nai||'')+'</td>'
+    +'<td style="border:0.5px solid #ccc;text-align:center;font-size:6.5px">'+(r.ch?'○':'')+'</td>'
+    +'<td style="border:0.5px solid #ccc;text-align:center;font-size:6.5px">'+(r.sh?'○':'')+'</td>'
+    +'<td style="border:0.5px solid #ccc;text-align:center;font-size:6.5px">'+(r.su?'○':'')+'</td>'
+    +'</tr>').join('');
+
+  var flows=d.flow.filter(f=>f.t||f.sub);
+  var tot=parseInt(d.totalTime)||50;
+  var totalUsed=flows.reduce((s,f)=>s+(parseInt(f.min)||0),0);
+  var diff=tot-totalUsed;
+
+  var EV_BADGE_COL=[{tc:'#72243E',bg:'#F4C0D1',lb:'知識・技能',short:'知'},{tc:'#534AB7',bg:'#CECBF6',lb:'思考・判断・表現',short:'思'},{tc:'#854F0B',bg:'#FAC775',lb:'主体的に学習に取り組む態度',short:'主'}];
+  var flowBlocks=flows.map((f,i)=>{
+    var m=parseInt(f.min)||0, flex=m>0?m:1;
+    var FLOW_COLS=[
+      {bg:'#E6F1FB',tc:'#0C447C'},
+      {bg:'#E1F5EE',tc:'#085041'},
+      {bg:'#EEEDFE',tc:'#3C3489'},
+      {bg:'#FAEEDA',tc:'#633806'},
+      {bg:'#FAECE7',tc:'#712B13'},
+      {bg:'#EAF3DE',tc:'#27500A'},
+      {bg:'#FBEAF0',tc:'#72243E'},
+      {bg:'#E6F1FB',tc:'#0C447C'}
+    ];
+    var bg=FLOW_COLS[i%FLOW_COLS.length].bg,tc=FLOW_COLS[i%FLOW_COLS.length].tc;
+    var subs=(f.sub||'').split('\n').filter(l=>l.trim())
+      .map(l=>'<div style="font-size:5.5px;color:'+tc+';padding-left:4px;line-height:1.4">'+esc(l.trim())+'</div>').join('');
+    var hy=f.hyoka||[];
+    var badges=hy.length?'<span style="background:#222;color:#fff;font-size:5px;padding:1px 5px;border-radius:0;font-weight:700;margin-top:2px;display:inline-block">評価ポイント</span>':'';
+    var hyAttr=hy.length?'data-hyoka="'+hy.map(function(h){return EV_BADGE_COL.findIndex(function(x){return x.lb===h;});}).filter(function(x){return x>=0;}).join(',')+'"':'';
+    return '<div '+hyAttr+' data-flow="'+i+'" style="flex:'+flex+';min-height:0;background:'+bg+';border-bottom:0.5px solid rgba(0,0,0,.07);padding:2px 5px;display:flex;gap:4px;overflow:hidden">'
+      +'<div style="width:11px;height:11px;border-radius:50%;background:'+tc+';color:#fff;font-size:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">'+(i+1)+'</div>'
+      +'<div style="flex:1;overflow:hidden">'
+        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:3px">'
+          +'<div style="font-size:6.5px;font-weight:700;color:'+tc+';line-height:1.4">'+esc(f.t||'')+'</div>'
+          +badges
+        +'</div>'
+        +subs
+      +'</div>'
+      +(m>0?'<div style="font-size:6px;color:'+tc+';opacity:.65;flex-shrink:0;font-weight:500;padding-top:1px;white-space:nowrap">'+m+'分</div>':'')
+      +'</div>';
+  }).join('');
+
+  var diffBlock='';
+  if(diff!==0&&flows.length>0){
+    var df=Math.abs(diff);
+    diffBlock='<div style="flex:'+(df||0.5)+';min-height:4px;background:'+(diff>0?'#f5f5f5':'#FCEBEB')+';padding:2px 6px;display:flex;align-items:center">'
+      +'<span style="font-size:5.5px;color:'+(diff>0?'#aaa':'#A32D2D')+'">'+(diff>0?'残り '+diff+'分':'超過 '+df+'分')+'</span></div>';
+  }
+
+  // ===== 本時行でチェックされている観点を取得 =====
+  var imaRow=d.sched.find(r=>r.ima)||{ch:false,sh:false,su:false};
+  // 観点インデックス対応: 0=知技, 1=思考, 2=主体
+  var imaActive=[imaRow.ch,imaRow.sh,imaRow.su];
+  // 授業の流れの評価場面からも集約
+  var EV_LBS=['知識・技能','思考・判断・表現','主体的に学習に取り組む態度'];
+  var hyokaActive=[false,false,false];
+  d.flow.forEach(function(f){(f.hyoka||[]).forEach(function(h){var idx=EV_LBS.indexOf(h);if(idx>=0)hyokaActive[idx]=true;});});
+
+  // ===== 評価セクション：CSSグリッドで3観点を完全均等 =====
+  var evHdr='<div style="display:grid;grid-template-columns:20px 1fr 78px;flex-shrink:0;border:0.5px solid #ccc;border-bottom:none">'
+    +'<div style="background:#f0f0f0;font-size:5.5px;font-weight:500;text-align:center;padding:2px;border-right:0.5px solid #ccc;display:flex;align-items:center;justify-content:center">観点</div>'
+    +'<div style="background:#f0f0f0;font-size:5.5px;font-weight:500;text-align:center;padding:2px;border-right:0.5px solid #ccc;line-height:1.3">評価規準<br><span style="font-weight:400">（何ができるか）</span></div>'
+    +'<div style="background:#f0f0f0;font-size:5.5px;font-weight:500;text-align:center;padding:2px;line-height:1.3">評価基準<br><span style="font-weight:400">（どれくらいできるか）</span></div>'
+    +'</div>';
+
+  var evBody='<div style="flex:1;display:flex;flex-direction:column;border:0.5px solid #ccc;border-top:none;overflow:hidden">'
+    +EVCOL.map((c,i)=>{
+      var active=imaActive[i]||hyokaActive[i];
+      var ev=d.ev[i];
+      var isLast=i===2;
+      var active=imaActive[i]; // 本時でこの観点がチェックされているか
+      var ryoCell=eigo&&ev.ryo.length
+        ?'<div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:2px">'+ryoTags(ev.ryo)+'</div>':'';
+
+      // 評価しない観点は薄く
+      var rowExtra=active?'':'opacity:0.45;';
+
+      return '<div data-evrow="'+i+'" style="flex:1;display:grid;grid-template-columns:20px 1fr 78px;'+(isLast?'':'border-bottom:0.5px solid #ccc;')+rowExtra+' min-height:0;overflow:hidden">'
+        // 観点セル
+        +'<div style="background:'+c.bg+';border-right:0.5px solid #ccc;display:flex;align-items:center;justify-content:center;padding:2px">'
+          +'<div style="writing-mode:vertical-rl;font-size:5.5px;font-weight:700;color:'+c.tc+';line-height:1.3;text-align:center">'+c.lb+'</div>'
+        +'</div>'
+        // 評価規準セル
+        +'<div style="border-right:0.5px solid #ccc;padding:2px 3px;overflow:hidden;display:flex;flex-direction:column;justify-content:center">'
+          +'<div style="font-size:6px;line-height:1.45">'+(ev.kij?esc(ev.kij):'<span style="color:#ccc;font-style:italic">—</span>')+'</div>'
+          +ryoCell
+        +'</div>'
+        // 評価基準セル（A/B均等）
+        +'<div style="display:flex;flex-direction:column;overflow:hidden">'
+          +'<div style="flex:1;padding:2px 3px;font-size:6px;line-height:1.4;border-bottom:0.5px solid #ddd;overflow:hidden"><b>A</b>　'+esc(ev.aK||'')+'</div>'
+          +'<div style="flex:1;padding:2px 3px;font-size:6px;line-height:1.4;overflow:hidden"><b>B</b>　'+esc(ev.bK||'')+'</div>'
+        +'</div>'
+      +'</div>';
+    }).join('')
+    +'</div>';
+
+  var html='<div style="background:#fff;width:'+SW+'px;height:'+SH+'px;border:1px solid #bbb;color:#222;font-family:sans-serif;display:flex;overflow:hidden;flex-shrink:0">'
+
+  // LEFT
+  +'<div style="width:185px;flex-shrink:0;display:flex;height:'+SH+'px">'
+    +'<div style="width:15px;flex-shrink:0;background:#5a1040;display:flex;flex-direction:column;align-items:center;padding:7px 0">'
+      +'<div style="writing-mode:vertical-rl;color:#F4C0D1;font-size:7.5px;font-weight:700;letter-spacing:1.5px;white-space:nowrap;line-height:1">れっすん・ぷらん</div>'
+      +'<div style="width:10px;height:0.5px;background:rgba(255,255,255,.35);margin:4px 0"></div>'
+      +'<div style="writing-mode:vertical-rl;color:#F4C0D1;font-size:7.5px;font-weight:700;letter-spacing:2px;white-space:nowrap">Side-B</div>'
+      +'<div style="flex:1"></div>'
+      +'<div style="writing-mode:vertical-rl;color:rgba(255,192,208,.45);font-size:5.5px;letter-spacing:.5px;white-space:nowrap">v0.9-beta</div>'
+    +'</div>'
+    +'<div style="flex:1;display:flex;flex-direction:column;border-right:1px solid #ccc;overflow:hidden">'
+      +'<div style="padding:4px 5px;flex-shrink:0;border-bottom:0.5px solid #eee">'
+        +'<table data-section="hdr" style="width:100%;border-collapse:collapse;border:1px solid #aaa;font-size:6px;background:#F5F5F5">' 
+          +'<tr style="background:#F5F5F5"><td style="color:#888;padding:1px 3px;white-space:nowrap;border-right:0.5px solid #ddd">校種・学年</td><td style="padding:1px 3px;font-weight:500">'+esc(d.gakko||'—')+'　'+esc(d.gakunen||'')+(d.gakunen?'年':'')+'</td></tr>'
+          +'<tr style="background:#F5F5F5"><td style="color:#888;padding:1px 3px;border-right:0.5px solid #ddd">科目：</td><td style="padding:1px 3px;font-weight:500">'+esc(d.kamoku||'—')+'</td></tr>'
+          +'<tr style="background:#F5F5F5"><td style="color:#888;padding:1px 3px;white-space:nowrap;border-right:0.5px solid #ddd">教材・単元：</td><td style="padding:1px 3px;font-weight:500;font-size:5.5px">'+esc(d.kyozai||'—')+'</td></tr>'
+          +'<tr style="background:#F5F5F5"><td style="color:#888;padding:1px 3px;white-space:nowrap;border-right:0.5px solid #ddd">授業日・時限：</td><td style="padding:1px 3px;font-weight:500;font-size:5.5px">'+ds()+'</td></tr>'
+          +'<tr style="background:#F5F5F5"><td style="color:#888;padding:1px 3px;border-right:0.5px solid #ddd">授業者：</td><td style="padding:1px 3px;font-weight:500">'+esc(d.jusho||'—')+'</td></tr>'+'<tr style="background:#F5F5F5"><td style="color:#888;padding:1px 3px;border-right:0.5px solid #ddd">生徒数：</td><td style="padding:1px 3px;font-weight:500">'+(d.seito?esc(d.seito)+'人':'—')+'</td></tr>'
+        +'</table>'
+      +'</div>'
+      +'<div data-section="tmok" style="padding:4px 5px;flex-shrink:0;border-bottom:0.5px solid #eee">'
+        +'<div style="font-size:6.5px;font-weight:700;color:#185FA5;margin-bottom:2px">🎯 単元の目標</div>'
+        +'<div style="background:#E6F1FB;padding:3px 5px;border-radius:4px">'
+          +'<div style="font-size:5.5px;line-height:1.55">'+ph(d.tMok,'単元の目標を入力してください')+'</div>'
+          +metaRow(d.tObs,eigo?d.tRyo:[])
+        +'</div>'
+      +'</div>'
+      // 単元計画（旧イマここ）
+      +'<div data-section="sched" style="flex:1;padding:4px 5px;display:flex;flex-direction:column;overflow:hidden">'
+        +'<div style="font-size:6.5px;font-weight:700;color:#185FA5;margin-bottom:2px;flex-shrink:0">📌 単元計画</div>'
+        +'<table style="width:100%;border-collapse:collapse;table-layout:fixed;flex:1">'
+          +'<thead><tr>'
+            +'<th style="background:#185FA5;color:#E6F1FB;padding:2px;text-align:center;width:16px;font-size:5.5px;border:0.5px solid #1870c0">時</th>'
+            +'<th style="background:#185FA5;color:#E6F1FB;padding:2px;text-align:left;font-size:5.5px;border:0.5px solid #1870c0">学習内容</th>'
+            +'<th style="background:#185FA5;color:#E6F1FB;padding:2px;text-align:center;width:13px;font-size:5.5px;border:0.5px solid #1870c0">知</th>'
+            +'<th style="background:#185FA5;color:#E6F1FB;padding:2px;text-align:center;width:13px;font-size:5.5px;border:0.5px solid #1870c0">思</th>'
+            +'<th style="background:#185FA5;color:#E6F1FB;padding:2px;text-align:center;width:13px;font-size:5.5px;border:0.5px solid #1870c0">主</th>'
+          +'</tr></thead>'
+          +'<tbody>'+schR+'</tbody>'
+        +'</table>'
+      +'</div>'
+    +'</div>'
+  +'</div>'
+
+  // RIGHT
+  +'<div style="flex:1;display:flex;flex-direction:column;min-width:0;height:'+SH+'px">'
+    // こだわりバー — フォントを小さく
+    +'<div data-section="kodawari" style="border-bottom:1px solid #ccc;padding:4px 10px;background:#fffef5;display:flex;align-items:center;gap:10px;flex-shrink:0">'
+      +'<div style="flex:1">'
+        +'<div style="font-size:5px;color:#aaa;margin-bottom:1px">授業者が本日の授業でこだわりたいポイント</div>'
+        +'<div style="font-size:8px;font-weight:400;color:#444">'+ph(d.kodawari,'こだわりポイントを入力')+'</div>'
+      +'</div>'
+      +'<div style="text-align:right;flex-shrink:0">'
+        +'<div style="font-size:5px;color:#aaa;margin-bottom:3px">達成度自己評価</div>'
+        +'<div style="display:flex;gap:4px;justify-content:flex-end">'  
+          +['A','B','C'].map(function(v){
+            var sel=d.jikoHyoka===v;
+            return '<div onclick="u(\'jikoHyoka\','+(sel?"''":"'"+v+"'")+')" style="cursor:pointer;width:18px;height:18px;border-radius:50%;border:1.5px solid '+(sel?'#185FA5':'#ccc')+';background:'+(sel?'#185FA5':'transparent')+';color:'+(sel?'#fff':'#aaa')+';font-size:6px;display:flex;align-items:center;justify-content:center;font-weight:700">'+v+'</div>';
+          }).join('')
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div style="flex:1;display:flex;min-height:0">'
+
+      // CENTER
+      +'<div style="flex:1.1;padding:5px 7px;display:flex;flex-direction:column;gap:4px;overflow:hidden">'
+        +'<div data-section="hmok" style="flex-shrink:0">'
+          +'<div style="font-size:6.5px;font-weight:700;color:#185FA5;margin-bottom:2px">🎯 本時の目標</div>'
+          +'<div style="background:#E6F1FB;border-radius:4px;padding:4px 9px">'
+            +'<div style="font-size:7.5px;color:#222;font-weight:500;line-height:1.4">'+ph(d.hMok,'本時の目標を入力')+'</div>'
+            +metaRow(d.hObs,eigo?d.hRyo:[])
+          +'</div>'
+        +'</div>'
+        +'<div data-section="flow" style="flex:1;border:0.5px solid #ddd;border-radius:3px;display:flex;flex-direction:column;overflow:hidden">'
+          +'<div style="font-size:6.5px;font-weight:700;color:#444;padding:3px 6px;border-bottom:0.5px solid #eee;flex-shrink:0;display:flex;justify-content:space-between;align-items:center">'
+            +'<span>⏰ 本時の授業の流れ</span>'
+            +'<span style="font-size:5.5px;color:#888;font-weight:400">計'+d.totalTime+'分授業</span>'
+          +'</div>'
+          +'<div style="padding:2px 6px;background:#F5F5F5;border-bottom:0.5px solid #ddd;flex-shrink:0">'
+            +'<span style="font-size:5.5px;color:#888">✎宿題・予習：</span>'
+            +'<span style="font-size:6px;color:#444">'+ph(d.yadai,'—')+'</span>'
+          +'</div>'
+          +'<div style="flex:1;display:flex;flex-direction:column;overflow:hidden">'+flowBlocks+diffBlock+'</div>'
+          +'<div style="padding:2px 6px;background:#F5F5F5;border-top:0.5px solid #ddd;flex-shrink:0">'
+            +'<span style="font-size:5.5px;color:#888">✎本日の課題：</span>'
+            +'<span style="font-size:6px;color:#444">'+ph(d.kadai,'—')+'</span>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+
+      // EVAL RIGHT — CSSグリッド均等
+      +'<div data-section="eval" style="width:200px;flex-shrink:0;padding:5px 6px;display:flex;flex-direction:column;overflow:hidden">'
+        +'<div style="font-size:6.5px;font-weight:700;color:#185FA5;margin-bottom:3px;flex-shrink:0">✿ 本時の評価ポイント！ <span style="font-size:5px;color:#aaa;font-weight:400">（評価規準・基準）</span></div>'
+        +'<div style="flex:1;display:flex;flex-direction:column;overflow:hidden">'
+          +evHdr
+          +evBody
+        +'</div>'
+        +'<div style="background:#E6F1FB;border-radius:3px;padding:4px 6px;flex-shrink:0;margin-top:4px">'
+          +'<div style="font-size:5.5px;color:#185FA5;font-weight:700;margin-bottom:3px">本時の評価を成績に</div>'
+          +'<div style="display:flex;gap:10px">'
+            +'<div style="display:flex;align-items:center;gap:3px;font-size:6px">'
+              +'<div style="width:9px;height:9px;border-radius:50%;'+(d.evType==='so'?'background:#185FA5;border:none':'background:#fff;border:1px solid #888')+'"></div>'
+              +'<span style="color:'+(d.evType==='so'?'#185FA5':'#666')+'">入れる（総括的評価）</span>'
+            +'</div>'
+            +'<div style="display:flex;align-items:center;gap:3px;font-size:6px">'
+              +'<div style="width:9px;height:9px;border-radius:50%;'+(d.evType==='kei'?'background:#185FA5;border:none':'background:#fff;border:1px solid #888')+'"></div>'
+              +'<span style="color:'+(d.evType==='kei'?'#185FA5':'#666')+'">入れない（形成的評価）</span>'
+            +'</div>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+  +'</div>'
+  +'</div>';
+
+  document.getElementById('pvb').innerHTML=html;
+  setTimeout(drawHyokaLines, 0);
+}
+
+function drawHyokaLines(){
+  var container=document.getElementById('pvb');
+  if(!container)return;
+  var old=container.querySelector('#hyoka-svg');
+  if(old)old.remove();
+  var flows=container.querySelectorAll('[data-flow]');
+  var evrows=container.querySelectorAll('[data-evrow]');
+  if(!flows.length||!evrows.length)return;
+  var cr=container.getBoundingClientRect();
+  var EV_LINE_COL=['#D4537E','#7F77DD','#EF9F27'];
+  var lines=[];
+  flows.forEach(function(fb){
+    var hy=fb.getAttribute('data-hyoka');
+    if(!hy)return;
+    var idxs=hy.split(',').map(Number).filter(function(n){return !isNaN(n);});
+    var fbr=fb.getBoundingClientRect();
+    var x0=fbr.right-cr.left;
+    var y0=fbr.top-cr.top+fbr.height/2;
+    idxs.forEach(function(idx){
+      var er=evrows[idx];
+      if(!er)return;
+      var err=er.getBoundingClientRect();
+      var x1=err.left-cr.left;
+      var y1=err.top-cr.top+err.height/2;
+      var cx=(x0+x1)/2;
+      lines.push('<path d="M'+x0+','+y0+' C'+cx+','+y0+' '+cx+','+y1+' '+x1+','+y1+'" stroke="'+EV_LINE_COL[idx]+'" stroke-width="1.2" stroke-dasharray="3,2" fill="none" opacity="0.7"/>');
+    });
+  });
+  if(!lines.length)return;
+  var w=cr.width,h=cr.height;
+  var svg='<svg id="hyoka-svg" style="position:absolute;top:0;left:0;width:'+w+'px;height:'+h+'px;pointer-events:none;overflow:visible" xmlns="http://www.w3.org/2000/svg">'+lines.join('')+'</svg>';
+  container.style.position='relative';
+  container.insertAdjacentHTML('beforeend',svg);
+}
+
+// ===== FULLSCREEN =====
+function openFullscreen(){
+  pvB();
+  var wrap=document.getElementById('fs-pvb-wrap');
+  wrap.innerHTML='';
+  var clone=document.getElementById('pvb').cloneNode(true);
+  clone.style.transform='scale(1)';
+  clone.style.transformOrigin='top left';
+  wrap.appendChild(clone);
+  document.getElementById('fs-overlay').style.display='flex';
+  fsTab('sheet');
+}
+function closeFullscreen(){
+  document.getElementById('fs-overlay').style.display='none';
+  stopClockTick();
+}
+function fsTab(t){
+  document.getElementById('fs-sheet').style.display=t==='sheet'?'block':'none';
+  document.getElementById('fs-clock').style.display=t==='clock'?'flex':'none';
+  document.getElementById('fst-sheet').style.fontWeight=t==='sheet'?'700':'400';
+  document.getElementById('fst-sheet').style.borderBottom=t==='sheet'?'2px solid #185FA5':'2px solid transparent';
+  document.getElementById('fst-clock').style.fontWeight=t==='clock'?'700':'400';
+  document.getElementById('fst-clock').style.borderBottom=t==='clock'?'2px solid #185FA5':'2px solid transparent';
+  if(t==='clock'){buildClock();startClockTick();}
+  else stopClockTick();
+}
+function startClock(){
+  renderClock();
+  if(window._clockTimer) clearInterval(window._clockTimer);
+  window._clockTimer=setInterval(renderClock,1000);
+}
+function renderClock(){
+  var now=new Date();
+  var hh=String(now.getHours()).padStart(2,'0');
+  var mm=String(now.getMinutes()).padStart(2,'0');
+  var ss=String(now.getSeconds()).padStart(2,'0');
+  var el=document.getElementById('fs-time');
+  if(el) el.textContent=hh+':'+mm+':'+ss;
+
+  var FLOW_COLS2=[
+    {bg:'#E6F1FB',tc:'#0C447C',solid:'#378ADD'},
+    {bg:'#E1F5EE',tc:'#085041',solid:'#1D9E75'},
+    {bg:'#EEEDFE',tc:'#3C3489',solid:'#7F77DD'},
+    {bg:'#FAEEDA',tc:'#633806',solid:'#EF9F27'},
+    {bg:'#FAECE7',tc:'#712B13',solid:'#D85A30'},
+    {bg:'#EAF3DE',tc:'#27500A',solid:'#639922'},
+    {bg:'#FBEAF0',tc:'#72243E',solid:'#D4537E'},
+    {bg:'#E6F1FB',tc:'#0C447C',solid:'#378ADD'}
+  ];
+
+  var flows=D.flow.filter(function(f){return f.t;});
+  var total=flows.reduce(function(s,f){return s+(parseInt(f.min)||0);},0)||1;
+  // remark rows (yadai / kadai) get a thin slice too
+  var yadaiMin=total>0?0:0; // only actual flow items
+
+  // Build pie chart SVG
+  var cx=140,cy=140,R=120,r=55; // donut
+  var startAngle=-Math.PI/2; // 12 o'clock
+  function polarToXY(angle,radius){
+    return {x:cx+radius*Math.cos(angle), y:cy+radius*Math.sin(angle)};
+  }
+  function slicePath(start,end,outerR,innerR){
+    var p1=polarToXY(start,outerR);
+    var p2=polarToXY(end,outerR);
+    var p3=polarToXY(end,innerR);
+    var p4=polarToXY(start,innerR);
+    var large=end-start>Math.PI?1:0;
+    return 'M '+p1.x+' '+p1.y
+      +' A '+outerR+' '+outerR+' 0 '+large+' 1 '+p2.x+' '+p2.y
+      +' L '+p3.x+' '+p3.y
+      +' A '+innerR+' '+innerR+' 0 '+large+' 0 '+p4.x+' '+p4.y
+      +' Z';
+  }
+
+  var slices='';
+  var legendItems='';
+  var angle=startAngle;
+  flows.forEach(function(f,i){
+    var m=parseInt(f.min)||0;
+    if(!m)return;
+    var sweep=(m/total)*2*Math.PI;
+    var col=FLOW_COLS2[i%FLOW_COLS2.length];
+    var endAngle=angle+sweep;
+    slices+='<path d="'+slicePath(angle,endAngle,R,r)+'" fill="'+col.solid+'" stroke="#fff" stroke-width="2"/>';
+    // label at midpoint
+    var mid=angle+sweep/2;
+    var lx=cx+(R*0.72)*Math.cos(mid);
+    var ly=cy+(R*0.72)*Math.sin(mid);
+    if(sweep>0.18){
+      slices+='<text x="'+lx+'" y="'+ly+'" text-anchor="middle" dominant-baseline="middle" '
+        +'fill="#fff" font-size="9" font-weight="700">'+m+'分</text>';
+    }
+    legendItems+='<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#444">'
+      +'<div style="width:10px;height:10px;border-radius:2px;background:'+col.solid+';flex-shrink:0"></div>'
+      +(i+1)+'. '+f.t
+    +'</div>';
+    angle=endAngle;
+  });
+
+  // Clock hand based on current minute within lesson
+  // hand always points to 12 o'clock for now (decorative center dot)
+  var handAngle=startAngle; // could be made dynamic
+  var handX=cx+r*0.6*Math.cos(handAngle);
+  var handY=cy+r*0.6*Math.sin(handAngle);
+
+  // Center: lesson goal snippet
+  var goalText=D.hMok?D.hMok.slice(0,20)+(D.hMok.length>20?'…':''):'';
+
+  var svg='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#f8f8f6"/>'
+    +slices
+    +'<circle cx="'+cx+'" cy="'+cy+'" r="8" fill="#555"/>'
+    +(goalText?'<text x="'+cx+'" y="'+(cy-12)+'" text-anchor="middle" font-size="8" fill="#666">'+goalText+'</text>':'')
+    +'<text x="'+cx+'" y="'+(cy+6)+'" text-anchor="middle" font-size="10" fill="#555" font-weight="700">'+total+'分</text>';
+
+  var pieEl=document.getElementById('fs-pie');
+  if(pieEl) pieEl.innerHTML=svg;
+  var legEl=document.getElementById('fs-pie-legend');
+  if(legEl) legEl.innerHTML=legendItems;
+
+  // Activity list on right
+  var fEl=document.getElementById('fs-flows');
+  if(fEl){
+    fEl.innerHTML=flows.map(function(f,i){
+      var col=FLOW_COLS2[i%FLOW_COLS2.length];
+      var hasEv=f.hyoka&&f.hyoka.length;
+      var subs=(f.sub||'').split('\n').filter(function(l){return l.trim();});
+      return '<div style="background:'+col.bg+';border-radius:10px;padding:12px 16px;margin-bottom:8px">'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+          +'<div style="width:22px;height:22px;border-radius:50%;background:'+col.tc+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div>'
+          +'<div style="font-size:15px;font-weight:700;color:'+col.tc+';flex:1">'+f.t+'</div>'
+          +(f.min?'<div style="font-size:13px;color:'+col.tc+';opacity:.7;white-space:nowrap">'+f.min+'分</div>':'')
+          +(hasEv?'<span style="background:#222;color:#fff;font-size:9px;padding:2px 7px;font-weight:700;margin-left:4px">評価ポイント</span>':'')
+        +'</div>'
+        +(subs.length?'<div style="padding-left:30px">'+subs.map(function(l){return '<div style="font-size:13px;color:'+col.tc+';opacity:.85;line-height:1.7">'+l+'</div>';}).join('')+'</div>':'')
+      +'</div>';
+    }).join('');
+  }
+}
+
+function doPrint(){
+  document.getElementById('ppa').innerHTML=document.getElementById('pvb').innerHTML;
+  window.print();
+}
+
+function doExportPDF(){
+  var fname=[(D.gakko||''),(D.gakunen?D.gakunen+'年':''),(D.kamoku||''),(D.kyozai||'').slice(0,12)].filter(x=>x).join('_');
+  document.title='れっすん・ぷらん_SideB'+(fname?'_'+fname:'');
+  document.getElementById('ppa').innerHTML=document.getElementById('pvb').innerHTML;
+  window.print();
+  setTimeout(function(){document.title='れっすん・ぷらん Side-B';},3000);
+}
+
+function doSave(){
+  var saveData=JSON.parse(JSON.stringify(D));
+  delete saveData.step;
+  var json=JSON.stringify(saveData,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  var parts=[(D.gakko||''),(D.gakunen?D.gakunen+'年':''),(D.kamoku||''),(D.kyozai||'').slice(0,16),(D.nen&&D.tsuki&&D.hi?D.nen+D.tsuki+D.hi:'')].filter(x=>x);
+  var fname='れっすん・ぷらん_SideB'+(parts.length?'_'+parts.join('_'):'');
+  a.href=url;
+  a.download=fname+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function doLoad(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var loaded=JSON.parse(e.target.result);
+      if(typeof loaded!=='object'||!loaded.kamoku)throw new Error('invalid');
+      Object.assign(D,loaded);
+      D.step=0;
+      render();
+      var msg=document.getElementById('loadmsg');
+      if(msg){msg.style.color='#0F6E56';msg.textContent='✓ 読み込みました：'+file.name;setTimeout(function(){if(msg)msg.textContent='';},4000);}
+    }catch(err){
+      var msg=document.getElementById('loadmsg');
+      if(msg){msg.style.color='#A32D2D';msg.textContent='⚠ 読み込みに失敗しました。正しいファイルか確認してください。';setTimeout(function(){if(msg){msg.textContent='';msg.style.color='#0F6E56';}},5000);}
+    }
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+
+var STEP_SECTION=['hdr','kodawari','tmok','sched','hmok','flow','eval',null];
+function highlightSection(){
+  // 全解除
+  document.querySelectorAll('.sec-highlight').forEach(function(el){el.classList.remove('sec-highlight');});
+  var sec=STEP_SECTION[D.step];
+  if(!sec)return;
+  setTimeout(function(){
+    document.querySelectorAll('[data-section="'+sec+'"]').forEach(function(el){
+      el.classList.add('sec-highlight');
+    });
+  },0);
+}
+
+// ===== CLOCK VIEW =====
+function showClockView(){
+  document.getElementById('app').style.display='none';
+  var cv=document.getElementById('clockview');
+  cv.style.display='flex';
+  buildClock();
+  startClockTick();
+}
+function hideClockView(){
+  document.getElementById('clockview').style.display='none';
+  document.getElementById('app').style.display='flex';
+  stopClockTick();
+}
+
+var _clockTick=null;
+function startClockTick(){
+  updateNeedle();
+  _clockTick=setInterval(updateNeedle,10000);
+}
+function stopClockTick(){if(_clockTick){clearInterval(_clockTick);_clockTick=null;}}
+
+function minToAngle(m){ return (m/60)*360-90; } // 0分=上(12時)=−90度
+function degToRad(d){ return d*Math.PI/180; }
+
+function buildClock(){
+  var d=D;
+  var flows=d.flow.filter(function(f){return f.t;});
+  var tot=parseInt(d.totalTime)||50;
+  var startH=parseInt(d.startH)||9;
+  var startM=(d.startM===undefined||d.startM===null)?0:parseInt(d.startM)||0;
+
+  var CX=240,CY=240,R=180,RI=80;
+  var FLOW_COLS_CK=[
+    {bg:'#E6F1FB',stroke:'#185FA5'},
+    {bg:'#E1F5EE',stroke:'#0F6E56'},
+    {bg:'#EEEDFE',stroke:'#534AB7'},
+    {bg:'#FAEEDA',stroke:'#854F0B'},
+    {bg:'#FAECE7',stroke:'#993C1D'},
+    {bg:'#EAF3DE',stroke:'#27500A'},
+    {bg:'#FBEAF0',stroke:'#72243E'},
+    {bg:'#E6F1FB',stroke:'#185FA5'}
+  ];
+
+  // 60分以内→時計モード、60分超→比率モード
+  var clockMode=(tot<=60);
+  // clockMode: 円全体＝60分、分針の位置に合わせて描画
+  // ratioMode: 円全体＝授業時間、等分で活動を描画、外周に実時刻ラベル
+
+  var svg='';
+  svg+='<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="#fafafa" stroke="#ddd" stroke-width="1.5"/>';
+  svg+='<circle cx="'+CX+'" cy="'+CY+'" r="'+RI+'" fill="white" stroke="#eee" stroke-width="1"/>';
+
+  if(clockMode){
+    // === 時計モード: 60分ダイヤル ===
+    // 分目盛り
+    for(var i=0;i<60;i++){
+      var a=degToRad((i/60)*360-90);
+      var isBig=(i%5===0);
+      var r0=isBig?R-18:R-10;
+      svg+='<line x1="'+(CX+Math.cos(a)*r0)+'" y1="'+(CY+Math.sin(a)*r0)+'" x2="'+(CX+Math.cos(a)*(R-3))+'" y2="'+(CY+Math.sin(a)*(R-3))+'" stroke="'+(isBig?'#bbb':'#ddd')+'" stroke-width="'+(isBig?1.5:0.8)+'"/>';
+    }
+    // 5分ごとの数字
+    for(var i=0;i<12;i++){
+      var m=i*5;
+      var a=degToRad((m/60)*360-90);
+      svg+='<text x="'+(CX+Math.cos(a)*(R-30))+'" y="'+(CY+Math.sin(a)*(R-30))+'" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#999" font-family="sans-serif">'+m+'</text>';
+    }
+    // 授業時間帯ベース
+    var baseStart=((startM%60)/60)*360-90;
+    svg+='<path d="'+describeArc(CX,CY,R-3,RI+3,baseStart,baseStart+tot/60*360)+'" fill="#f0f0f0" stroke="none"/>';
+    // 活動扇形
+    var cur=startM;
+    flows.forEach(function(f,i){
+      var m=parseInt(f.min)||0; if(m<=0)return;
+      var aS=((cur%60)/60)*360-90;
+      var col=FLOW_COLS_CK[i%FLOW_COLS_CK.length];
+      svg+='<path d="'+describeArc(CX,CY,R-3,RI+3,aS,aS+m/60*360)+'" fill="'+col.bg+'" stroke="'+col.stroke+'" stroke-width="1.5" style="cursor:pointer" onclick="clockSegClick('+i+')" />';
+      var borderAngle=degToRad(aS);
+      svg+='<line x1="'+(CX+Math.cos(borderAngle)*(RI+3))+'" y1="'+(CY+Math.sin(borderAngle)*(RI+3))+'" x2="'+(CX+Math.cos(borderAngle)*(R-3))+'" y2="'+(CY+Math.sin(borderAngle)*(R-3))+'" stroke="'+col.stroke+'" stroke-width="1.5"/>';
+      var midAngle=degToRad(aS+m/60*180);
+      var labelR=(R-3+RI+3)/2;
+      var lx=CX+Math.cos(midAngle)*labelR, ly=CY+Math.sin(midAngle)*labelR;
+      var arcDeg=m/60*360;
+      var title=f.t||'';
+      var arcPx=degToRad(arcDeg)*labelR;
+      var maxChars=Math.floor(arcPx/6.5);
+      if(arcDeg>=12){
+        var short=title.length>maxChars?title.slice(0,Math.max(2,maxChars))+'…':title;
+        svg+='<text text-anchor="middle" font-family="sans-serif" style="pointer-events:none">';
+        if(arcDeg<22) svg+='<tspan x="'+lx+'" y="'+ly+'" font-size="10" fill="'+col.stroke+'" font-weight="bold">'+(i+1)+'</tspan>';
+        else if(arcDeg<40){
+          svg+='<tspan x="'+lx+'" y="'+(ly-5)+'" font-size="8" fill="'+col.stroke+'" font-weight="bold">'+(i+1)+'</tspan>';
+          svg+='<tspan x="'+lx+'" y="'+(ly+6)+'" font-size="7.5" fill="'+col.stroke+'">'+short+'</tspan>';
+        } else {
+          svg+='<tspan x="'+lx+'" y="'+(ly-9)+'" font-size="9" fill="'+col.stroke+'" font-weight="bold">'+(i+1)+'</tspan>';
+          svg+='<tspan x="'+lx+'" y="'+(ly+3)+'" font-size="8" fill="'+col.stroke+'">'+short+'</tspan>';
+          svg+='<tspan x="'+lx+'" y="'+(ly+14)+'" font-size="7.5" fill="'+col.stroke+'" opacity="0.7">'+m+'分</tspan>';
+        }
+        svg+='</text>';
+      }
+      // 外周の分ラベル
+      svg+='<text x="'+(CX+Math.cos(borderAngle)*(R+20))+'" y="'+(CY+Math.sin(borderAngle)*(R+20))+'" text-anchor="middle" dominant-baseline="middle" font-size="9.5" fill="#666" font-family="sans-serif">'+(cur%60)+'</text>';
+      cur+=m;
+    });
+    // 終了ラベル
+    var endAngleRad=degToRad(((cur%60)/60)*360-90);
+    svg+='<text x="'+(CX+Math.cos(endAngleRad)*(R+20))+'" y="'+(CY+Math.sin(endAngleRad)*(R+20))+'" text-anchor="middle" dominant-baseline="middle" font-size="9.5" fill="#A32D2D" font-weight="bold" font-family="sans-serif">'+(cur%60)+'</text>';
+    // 中心
+    svg+='<text x="'+CX+'" y="'+(CY-12)+'" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="#444" font-family="sans-serif">'+startH.toString().padStart(2,'0')+':'+startM.toString().padStart(2,'0')+'</text>';
+    svg+='<text x="'+CX+'" y="'+(CY+4)+'" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="#888" font-family="sans-serif">開始</text>';
+    svg+='<text x="'+CX+'" y="'+(CY+18)+'" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="#888" font-family="sans-serif">'+tot+'分授業</text>';
+    svg+='<g id="ck-needle"></g>';
+
+  } else {
+    // === 比率モード: 円全体 = 授業時間 ===
+    // 目盛り（授業時間を10等分）
+    var tickCount=10;
+    for(var i=0;i<tickCount*5;i++){
+      var a=degToRad((i/(tickCount*5))*360-90);
+      var isBig=(i%5===0);
+      var r0=isBig?R-18:R-10;
+      svg+='<line x1="'+(CX+Math.cos(a)*r0)+'" y1="'+(CY+Math.sin(a)*r0)+'" x2="'+(CX+Math.cos(a)*(R-3))+'" y2="'+(CY+Math.sin(a)*(R-3))+'" stroke="'+(isBig?'#bbb':'#ddd')+'" stroke-width="'+(isBig?1.5:0.8)+'"/>';
+    }
+    // 外周に実時刻ラベル（10等分）
+    for(var i=0;i<tickCount;i++){
+      var elapsedMin=Math.round(i*tot/tickCount);
+      var absMin=startH*60+startM+elapsedMin;
+      var lh=Math.floor(absMin/60)%24, lm=absMin%60;
+      var timeLabel=lh.toString().padStart(2,'0')+':'+lm.toString().padStart(2,'0');
+      var a=degToRad((i/tickCount)*360-90);
+      svg+='<text x="'+(CX+Math.cos(a)*(R+22))+'" y="'+(CY+Math.sin(a)*(R+22))+'" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="#666" font-family="sans-serif">'+timeLabel+'</text>';
+    }
+    // 活動扇形（比率で配置）
+    var cur=0; // elapsed minutes from start
+    flows.forEach(function(f,i){
+      var m=parseInt(f.min)||0; if(m<=0)return;
+      var aS=(cur/tot)*360-90;
+      var sweep=(m/tot)*360;
+      var col=FLOW_COLS_CK[i%FLOW_COLS_CK.length];
+      svg+='<path d="'+describeArc(CX,CY,R-3,RI+3,aS,aS+sweep)+'" fill="'+col.bg+'" stroke="'+col.stroke+'" stroke-width="1.5" style="cursor:pointer" onclick="clockSegClick('+i+')" />';
+      var borderAngle=degToRad(aS);
+      svg+='<line x1="'+(CX+Math.cos(borderAngle)*(RI+3))+'" y1="'+(CY+Math.sin(borderAngle)*(RI+3))+'" x2="'+(CX+Math.cos(borderAngle)*(R-3))+'" y2="'+(CY+Math.sin(borderAngle)*(R-3))+'" stroke="'+col.stroke+'" stroke-width="1.5"/>';
+      var midAngle=degToRad(aS+sweep/2);
+      var labelR=(R-3+RI+3)/2;
+      var lx=CX+Math.cos(midAngle)*labelR, ly=CY+Math.sin(midAngle)*labelR;
+      var arcPx=degToRad(sweep)*labelR;
+      var maxChars=Math.floor(arcPx/6.5);
+      var title=f.t||'';
+      if(sweep>=10){
+        var short=title.length>maxChars?title.slice(0,Math.max(2,maxChars))+'…':title;
+        svg+='<text text-anchor="middle" font-family="sans-serif" style="pointer-events:none">';
+        if(sweep<18) svg+='<tspan x="'+lx+'" y="'+ly+'" font-size="10" fill="'+col.stroke+'" font-weight="bold">'+(i+1)+'</tspan>';
+        else if(sweep<35){
+          svg+='<tspan x="'+lx+'" y="'+(ly-5)+'" font-size="8" fill="'+col.stroke+'" font-weight="bold">'+(i+1)+'</tspan>';
+          svg+='<tspan x="'+lx+'" y="'+(ly+6)+'" font-size="7.5" fill="'+col.stroke+'">'+short+'</tspan>';
+        } else {
+          svg+='<tspan x="'+lx+'" y="'+(ly-9)+'" font-size="9" fill="'+col.stroke+'" font-weight="bold">'+(i+1)+'</tspan>';
+          svg+='<tspan x="'+lx+'" y="'+(ly+3)+'" font-size="8" fill="'+col.stroke+'">'+short+'</tspan>';
+          svg+='<tspan x="'+lx+'" y="'+(ly+14)+'" font-size="7.5" fill="'+col.stroke+'" opacity="0.7">'+m+'分</tspan>';
+        }
+        svg+='</text>';
+      }
+      cur+=m;
+    });
+    // 中心
+    svg+='<text x="'+CX+'" y="'+(CY-16)+'" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#444" font-family="sans-serif">'+startH.toString().padStart(2,'0')+':'+startM.toString().padStart(2,'0')+'〜</text>';
+    var endH=Math.floor((startH*60+startM+tot)/60)%24, endMm=(startM+tot)%60;
+    svg+='<text x="'+CX+'" y="'+(CY+2)+'" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#444" font-family="sans-serif">'+endH.toString().padStart(2,'0')+':'+endMm.toString().padStart(2,'0')+'</text>';
+    svg+='<text x="'+CX+'" y="'+(CY+18)+'" text-anchor="middle" dominant-baseline="middle" font-size="10" fill="#888" font-family="sans-serif">'+tot+'分授業</text>';
+    svg+='<g id="ck-needle"></g>';
+  }
+
+  document.getElementById('ck-svg').innerHTML=svg;
+
+  // レジェンド（共通）
+  var leg='';
+  var cur2=startH*60+startM;
+  flows.forEach(function(f,i){
+    var m=parseInt(f.min)||0; if(m<=0)return;
+    var col=FLOW_COLS_CK[i%FLOW_COLS_CK.length];
+    var st=(Math.floor(cur2/60)%24).toString().padStart(2,'0')+':'+((cur2%60)).toString().padStart(2,'0');
+    var en2=(Math.floor((cur2+m)/60)%24).toString().padStart(2,'0')+':'+((( cur2+m)%60)).toString().padStart(2,'0');
+    leg+='<div id="ckleg-'+i+'" onclick="clockSegClick('+i+')" style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:border-color .15s">'
+      +'<div style="width:14px;height:14px;border-radius:3px;background:'+col.bg+';border:1.5px solid '+col.stroke+';flex-shrink:0;margin-top:2px"></div>'
+      +'<div>'
+        +'<div style="font-size:12px;font-weight:500;color:'+col.stroke+'">'+esc(f.t||'')+'</div>'
+        +'<div style="font-size:10px;color:#888">'+st+' 〜 '+en2+' （'+m+'分）</div>'
+        +(f.sub?'<div style="font-size:10px;color:#666;margin-top:2px">'+f.sub.replace(/\n/g,'<br>')+'</div>':'')
+      +'</div>'
+    +'</div>';
+    cur2+=m;
+  });
+  document.getElementById('ck-legend').innerHTML=leg;
+  updateNeedle();
+}
+
+function describeArc(cx,cy,ro,ri,startDeg,endDeg){
+  var s=degToRad(startDeg), e=degToRad(endDeg);
+  var large=(endDeg-startDeg)>180?1:0;
+  return [
+    'M',cx+Math.cos(s)*ri,cy+Math.sin(s)*ri,
+    'L',cx+Math.cos(s)*ro,cy+Math.sin(s)*ro,
+    'A',ro,ro,0,large,1,cx+Math.cos(e)*ro,cy+Math.sin(e)*ro,
+    'L',cx+Math.cos(e)*ri,cy+Math.sin(e)*ri,
+    'A',ri,ri,0,large,0,cx+Math.cos(s)*ri,cy+Math.sin(s)*ri,
+    'Z'
+  ].join(' ');
+}
+
+function updateNeedle(){
+  var g=document.getElementById('ck-needle');
+  if(!g)return;
+  var now=new Date();
+  var CX=240,CY=240;
+  var tot=parseInt(D.totalTime)||50;
+  var startH=parseInt(D.startH)||9;
+  var startM=(D.startM===undefined||D.startM===null)?0:parseInt(D.startM)||0;
+  var a;
+  if(tot<=60){
+    // 時計モード: 現在の分で針を動かす
+    var m=now.getMinutes()+now.getSeconds()/60;
+    a=degToRad((m/60)*360-90);
+  } else {
+    // 比率モード: 授業開始からの経過時間で針を動かす
+    var nowMins=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+    var startTotalMins=startH*60+startM;
+    var elapsed=nowMins-startTotalMins;
+    if(elapsed<0) elapsed=0;
+    if(elapsed>tot) elapsed=tot;
+    a=degToRad((elapsed/tot)*360-90);
+  }
+  var timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  g.innerHTML=
+    '<line x1="'+CX+'" y1="'+CY+'" x2="'+(CX+Math.cos(a)*170)+'" y2="'+(CY+Math.sin(a)*170)+'" stroke="#E24B4A" stroke-width="2.5" stroke-linecap="round"/>'
+    +'<circle cx="'+CX+'" cy="'+CY+'" r="5" fill="#E24B4A"/>'
+    +'<text x="'+(CX+Math.cos(a)*195)+'" y="'+(CY+Math.sin(a)*195)+'" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="#E24B4A" font-weight="bold" font-family="sans-serif">'+timeStr+'</text>';
+}
+
+function clockSegClick(idx){
+  // ハイライト
+  document.querySelectorAll('[id^=ckleg-]').forEach(function(el){
+    el.style.borderColor='transparent';el.style.background='';
+  });
+  var leg=document.getElementById('ckleg-'+idx);
+  if(leg){leg.style.borderColor='#534AB7';leg.style.background='#f5f4ff';leg.scrollIntoView({behavior:'smooth',block:'nearest'});}
+}
+
+function render(){
+  document.getElementById('sbar').innerHTML=STS.map((s,i)=>'<div class="sd '+(i===D.step?'act':i<D.step?'dn':'')+'" onclick="goStep('+i+')" title="'+s.t+'">'+(i+1)+'</div>').join('');
+  document.getElementById('fc').innerHTML=formHTML();
+  document.getElementById('prg').textContent='ステップ '+(D.step+1)+' / '+STS.length;
+  document.getElementById('bp').disabled=D.step===0;
+  document.getElementById('bn').style.display=D.step===STS.length-1?'none':'';
+  pvB();
+  highlightSection();
+}
+
+function goTop(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('landing').style.display='flex';
+}
+
+function startBlank(){
+  // D をリセット（空白）
+  Object.assign(D,{
+    step:0,
+    gakko:'',gakunen:'',kamoku:'',kyozai:'',
+    nen:'',tsuki:'',hi:'',yobi:'',jigen:'',jusho:'',seito:'',
+    eigoFlag:false,totalTime:50,startH:9,startM:45,kodawari:'',
+    tMok:'',tObs:[],tRyo:[],schedCount:8,
+    sched:Array.from({length:8},function(_,i){return {ji:i+1,nai:'',ch:false,sh:false,su:false,ima:false};}),
+    hMok:'',hObs:[],hRyo:[],yadai:'',
+    flow:[{t:'',sub:'',min:5,hyoka:[]}],
+    kadai:'',
+    ev:[{kij:'',aK:'',bK:'',ryo:[]},{kij:'',aK:'',bK:'',ryo:[]},{kij:'',aK:'',bK:'',ryo:[]}],
+    evType:'kei'
+  });
+  document.getElementById('landing').style.display='none';
+  document.getElementById('app').style.display='flex';
+  render();
+}
+
+function startSample(){
+  Object.assign(D, JSON.parse(JSON.stringify(SAMPLE_D)));
+  D.step=0;
+  document.getElementById('landing').style.display='none';
+  document.getElementById('app').style.display='flex';
+  render();
+}
+
+function loadAndStart(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var loaded=JSON.parse(e.target.result);
+      if(typeof loaded!=='object'||!loaded.kamoku)throw new Error('invalid');
+      Object.assign(D,loaded);
+      D.step=0;
+      document.getElementById('landing').style.display='none';
+      document.getElementById('app').style.display='flex';
+      render();
+    }catch(err){
+      var msg=document.getElementById('landmsg');
+      if(msg)msg.textContent='⚠ 読み込みに失敗しました。正しいJSONファイルか確認してください。';
+    }
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function go(d){if(D.step+d>=0&&D.step+d<STS.length){D.step+=d;render();document.getElementById('fc').scrollTop=0;}}
+function goStep(i){D.step=i;render();document.getElementById('fc').scrollTop=0;}
+render();
+</script>
+
+<div id="fs-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;flex-direction:column">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #eee;flex-shrink:0;height:44px;gap:0">
+    <div id="fst-sheet" onclick="fsTab('sheet')" style="padding:0 16px;height:44px;display:flex;align-items:center;font-size:13px;cursor:pointer;border-bottom:2px solid #185FA5;font-weight:700;color:#185FA5">シートビュー</div>
+    <div id="fst-clock" onclick="fsTab('clock')" style="padding:0 16px;height:44px;display:flex;align-items:center;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;font-weight:400;color:#888">時計ビュー</div>
+    <div style="flex:1"></div>
+    <button onclick="closeFullscreen()" style="padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:6px;background:none;cursor:pointer;color:#666">✕ 閉じる</button>
+  </div>
+
+  <!-- Sheet view -->
+  <div id="fs-sheet" style="flex:1;overflow:auto;padding:20px;display:block;background:#f5f5f3">
+    <div id="fs-pvb-wrap" style="display:flex;justify-content:center"></div>
+  </div>
+
+  <!-- Clock view -->
+  <div id="fs-clock" style="flex:1;display:none;flex-direction:row;overflow:hidden">
+    <div style="flex:0 0 520px;display:flex;align-items:center;justify-content:center;padding:20px;border-right:1px solid #eee">
+      <svg id="ck-svg" width="480" height="480" viewBox="0 0 480 480"></svg>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:16px 20px">
+      <div style="font-size:12px;color:#aaa;margin-bottom:10px">セグメントをクリックすると詳細が表示されます</div>
+      <div id="ck-legend" style="display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+  </div>
+</div>
+</body></html>

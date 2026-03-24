@@ -74,7 +74,7 @@ textarea{resize:vertical;min-height:52px;line-height:1.5}
   <div style="background:#fff;border-radius:16px;border:0.5px solid #e0e0e0;padding:40px 36px;max-width:440px;width:100%;text-align:center">
     <div style="font-size:28px;margin-bottom:6px">📋</div>
     <div style="font-size:20px;font-weight:500;color:#222;margin-bottom:4px">れっすん・ぷらん</div>
-    <div style="font-size:12px;color:#888;margin-bottom:32px;letter-spacing:.5px">Side-B メーカー　v0.8-beta</div>
+    <div style="font-size:12px;color:#888;margin-bottom:32px;letter-spacing:.5px">Side-B メーカー　v0.9</div>
 
     <button onclick="startBlank()" style="display:block;width:100%;padding:14px 16px;margin-bottom:10px;background:#185FA5;color:#E6F1FB;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;text-align:left">
       ✏️　新規作成（空白）
@@ -113,16 +113,6 @@ textarea{resize:vertical;min-height:52px;line-height:1.5}
 
 
 <script>
-
-// IME composition guard
-var _composing=false;
-document.addEventListener('compositionstart',function(){_composing=true;});
-document.addEventListener('compositionend',function(e){
-  _composing=false;
-  // fire the handler on the element that triggered compositionend
-  var ev=new Event('input',{bubbles:true});
-  e.target.dispatchEvent(ev);
-});
 
 var RYOS=['聞くこと','読むこと','話すこと〔やり取り〕','話すこと〔発表〕','書くこと'];
 var OBSS=['知識・技能','思考・判断・表現','主体的に学習に取り組む態度'];
@@ -165,7 +155,8 @@ var SAMPLE_D={
     {kij:'',aK:'',bK:'',ryo:[]}
   ],
   evType:'kei',
-  jikoHyoka:''
+  jikoHyoka:'',
+  clockMemos:[]
 };
 
 var D={
@@ -255,30 +246,30 @@ function formHTML(){
 
   if(s===0) return h
     +'<div class="r2">'
-      +'<div class="fg"><label>校種</label><input oninput="if(!_composing){u(\'gakko\',this.value)}" value="'+esc(D.gakko)+'" placeholder="中学校"></div>'
-      +'<div class="fg"><label>学年</label><input oninput="if(!_composing){u(\'gakunen\',this.value)}" value="'+esc(D.gakunen)+'" placeholder="1"></div>'
+      +'<div class="fg"><label>校種</label><input onchange="u(\'gakko\',this.value)" value="'+esc(D.gakko)+'" placeholder="中学校"></div>'
+      +'<div class="fg"><label>学年</label><input onchange="u(\'gakunen\',this.value)" value="'+esc(D.gakunen)+'" placeholder="1"></div>'
     +'</div>'
     +'<div class="fg"><label>科目</label>'
-      +'<input oninput="if(!_composing){u(\'kamoku\',this.value)}" value="'+esc(D.kamoku)+'" placeholder="英語科">'
+      +'<input onchange="u(\'kamoku\',this.value)" value="'+esc(D.kamoku)+'" placeholder="英語科">'
       +'<label class="eigobox" style="margin-top:5px">'
         +'<input type="checkbox" onchange="u(\'eigoFlag\',this.checked)" '+(D.eigoFlag?'checked':'')+'>'
         +'<span>英語科の指導案を作成する<br><span style="font-size:9px;opacity:.8">（「読むこと」「書くこと」などの５領域の設定ができるようになります）</span></span>'
       +'</label>'
     +'</div>'
-    +'<div class="fg"><label>教材・単元</label><input oninput="if(!_composing){u(\'kyozai\',this.value)}" value="'+esc(D.kyozai)+'" placeholder="New Crown Lesson5"></div>'
+    +'<div class="fg"><label>教材・単元</label><input onchange="u(\'kyozai\',this.value)" value="'+esc(D.kyozai)+'" placeholder="New Crown Lesson5"></div>'
     +'<div class="fg"><label>授業日</label>'
       +'<div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center">'
-        +'<input oninput="if(!_composing){u(\'nen\',this.value)}" value="'+D.nen+'" placeholder="2024" style="width:48px"><span style="font-size:10px;color:#888">年</span>'
-        +'<input oninput="if(!_composing){u(\'tsuki\',this.value)}" value="'+D.tsuki+'" placeholder="10" style="width:28px"><span style="font-size:10px;color:#888">月</span>'
-        +'<input oninput="if(!_composing){u(\'hi\',this.value)}" value="'+D.hi+'" placeholder="21" style="width:28px"><span style="font-size:10px;color:#888">日</span>'
-        +'<input oninput="if(!_composing){u(\'yobi\',this.value)}" value="'+D.yobi+'" placeholder="木" style="width:26px"><span style="font-size:10px;color:#888">曜</span>'
-        +'<input oninput="if(!_composing){u(\'jigen\',this.value)}" value="'+D.jigen+'" placeholder="3" style="width:24px"><span style="font-size:10px;color:#888">限</span>'
+        +'<input onchange="u(\'nen\',this.value)" value="'+D.nen+'" placeholder="2024" style="width:48px"><span style="font-size:10px;color:#888">年</span>'
+        +'<input onchange="u(\'tsuki\',this.value)" value="'+D.tsuki+'" placeholder="10" style="width:28px"><span style="font-size:10px;color:#888">月</span>'
+        +'<input onchange="u(\'hi\',this.value)" value="'+D.hi+'" placeholder="21" style="width:28px"><span style="font-size:10px;color:#888">日</span>'
+        +'<input onchange="u(\'yobi\',this.value)" value="'+D.yobi+'" placeholder="木" style="width:26px"><span style="font-size:10px;color:#888">曜</span>'
+        +'<input onchange="u(\'jigen\',this.value)" value="'+D.jigen+'" placeholder="3" style="width:24px"><span style="font-size:10px;color:#888">限</span>'
       +'</div>'
     +'</div>'
-    +'<div class="fg"><label>授業者</label><input oninput="if(!_composing){u(\'jusho\',this.value)}" value="'+esc(D.jusho)+'" placeholder="山田 太郎"></div>'
+    +'<div class="fg"><label>授業者</label><input onchange="u(\'jusho\',this.value)" value="'+esc(D.jusho)+'" placeholder="山田 太郎"></div>'
     +'<div class="fg"><label>生徒数</label>'
       +'<div style="display:flex;align-items:center;gap:6px">'
-        +'<input type="number" min="1" max="99" oninput="if(!_composing){u(\'seito\',this.value)}" value="'+(D.seito||'')+'" placeholder="35" style="width:60px">'
+        +'<input type="number" min="1" max="99" onchange="u(\'seito\',this.value)" value="'+(D.seito||'')+'" placeholder="35" style="width:60px">'
         +'<span style="font-size:10px;color:#888">人</span>'
       +'</div>'
     +'</div>';
@@ -294,24 +285,16 @@ function formHTML(){
         +'<label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer">'
           +'<input type="radio" name="tt" '+(![45,50,55,65].includes(D.totalTime)?'checked':'')+'>その他'
         +'</label>'
-        +'<input type="number" min="1" max="120" value="'+D.totalTime+'" oninput="if(!_composing){u(\'totalTime\',parseInt(this.value)||50)}" style="width:50px">'
-      +'</div>'
-    +'</div>'
-    +'<div class="fg"><label>授業開始時刻</label>'
-      +'<div style="display:flex;align-items:center;gap:6px">'
-        +'<input type="number" min="0" max="23" value="'+(D.startH||9)+'" oninput="if(!_composing){u(\'startH\',parseInt(this.value)||0)}" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
-        +'<span style="font-size:13px;color:#555;font-weight:500">:</span>'
-        +'<input type="number" min="0" max="59" value="'+((D.startM===undefined||D.startM===null)?0:D.startM)+'" oninput="if(!_composing){u(\'startM\',this.value===\'\'?0:parseInt(this.value))}" style="width:52px;text-align:center;font-size:16px;padding:6px 4px">'
-        +'<span style="font-size:10px;color:#888">（時計ビューで使用します）</span>'
+        +'<input type="number" min="1" max="120" value="'+D.totalTime+'" onchange="u(\'totalTime\',parseInt(this.value)||50)" style="width:50px">'
       +'</div>'
     +'</div>'
     +'<div class="fg"><label>授業者のこだわりポイント</label>'
-      +'<textarea oninput="if(!_composing){u(\'kodawari\',this.value)}" placeholder="今日のこだわりを一言で">'+esc(D.kodawari)+'</textarea>'
+      +'<textarea onchange="u(\'kodawari\',this.value)" placeholder="今日のこだわりを一言で">'+esc(D.kodawari)+'</textarea>'
     +'</div>';
 
   if(s===2) return h
     +'<div class="fg"><label>単元の目標（文章）</label>'
-      +'<textarea style="min-height:72px" oninput="if(!_composing){u(\'tMok\',this.value)}" placeholder="単元の最後にできるようになること">'+esc(D.tMok)+'</textarea>'
+      +'<textarea style="min-height:72px" onchange="u(\'tMok\',this.value)" placeholder="単元の最後にできるようになること">'+esc(D.tMok)+'</textarea>'
     +'</div>'
     +'<div class="fg"><label>観点（複数選択可）</label><div style="margin-top:3px">'+obsCkr('tObs')+'</div></div>'
     +eigoRyoField('tRyo');
@@ -321,7 +304,7 @@ function formHTML(){
       var isFirst=(i===0),isLast=(i===D.sched.length-1);
       return '<tr>'
         +'<td>'+r.ji+'</td>'
-        +'<td style="text-align:left"><input type="text" oninput="if(!_composing){uS('+i+',\'nai\',this.value)}" value="'+esc(r.nai)+'" placeholder="学習内容"></td>'
+        +'<td style="text-align:left"><input type="text" onchange="uS('+i+',\'nai\',this.value)" value="'+esc(r.nai)+'" placeholder="学習内容"></td>'
         +'<td><input type="checkbox" onchange="uS('+i+',\'ch\',this.checked)" '+(r.ch?'checked':'')+'></td>'
         +'<td><input type="checkbox" onchange="uS('+i+',\'sh\',this.checked)" '+(r.sh?'checked':'')+'></td>'
         +'<td><input type="checkbox" onchange="uS('+i+',\'su\',this.checked)" '+(r.su?'checked':'')+'></td>'
@@ -337,7 +320,7 @@ function formHTML(){
     return h
       +'<div class="fg" style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'
         +'<label style="font-size:10px;color:#666;margin:0;white-space:nowrap">単元のコマ数</label>'
-        +'<input type="number" min="1" max="30" value="'+(D.schedCount||8)+'" oninput="if(!_composing){setSchedCount(this.value)}" style="width:52px;text-align:center">'
+        +'<input type="number" min="1" max="30" value="'+(D.schedCount||8)+'" onchange="setSchedCount(this.value)" style="width:52px;text-align:center">'
         +'<span style="font-size:10px;color:#888">コマ</span>'
       +'</div>'
       +'<div class="fg"><label>単元計画表　（本時の授業に◉をつける）</label>'
@@ -353,7 +336,7 @@ function formHTML(){
 
   if(s===4) return h
     +'<div class="fg"><label>本時の目標</label>'
-      +'<textarea oninput="if(!_composing){u(\'hMok\',this.value)}" placeholder="今日の授業でめざすこと">'+esc(D.hMok)+'</textarea>'
+      +'<textarea onchange="u(\'hMok\',this.value)" placeholder="今日の授業でめざすこと">'+esc(D.hMok)+'</textarea>'
     +'</div>'
     +'<div class="fg"><label>観点（複数選択可）</label><div style="margin-top:3px">'+obsCkr('hObs')+'</div></div>'
     +eigoRyoField('hRyo');
@@ -374,8 +357,8 @@ function formHTML(){
       return '<div class="fblk">'
         +'<div class="ftop">'
           +'<div class="fn">'+(i+1)+'</div>'
-          +'<input type="text" oninput="if(!_composing){uF('+i+',\'t\',this.value)}" value="'+esc(f.t)+'" placeholder="活動名" style="flex:1">'
-          +'<input type="number" min="1" max="60" value="'+(f.min||'')+'" oninput="if(!_composing){uF('+i+',\'min\',parseInt(this.value)||0)}" placeholder="分" style="text-align:center;width:42px">'
+          +'<input type="text" onchange="uF('+i+',\'t\',this.value)" value="'+esc(f.t)+'" placeholder="活動名" style="flex:1">'
+          +'<input type="number" min="1" max="60" value="'+(f.min||'')+'" onchange="uF('+i+',\'min\',parseInt(this.value)||0)" placeholder="分" style="text-align:center;width:42px">'
           +'<span style="font-size:9px;color:#888;margin-top:6px">分</span>'
           +'<div style="display:flex;flex-direction:column;gap:1px;margin-top:1px">'
             +'<button style="background:none;border:0.5px solid #ccc;border-radius:3px;width:18px;height:14px;font-size:8px;cursor:pointer;line-height:1;padding:0;color:'+(isFirst?'#ddd':'#666')+'" onclick="moveF('+i+',-1)" '+(isFirst?'disabled':'')+'>▲</button>'
@@ -383,7 +366,7 @@ function formHTML(){
           +'</div>'
           +'<button class="rmb" onclick="removeF('+i+')">×</button>'
         +'</div>'
-        +'<textarea style="min-height:44px;font-size:10px" oninput="if(!_composing){uF('+i+',\'sub\',this.value)}" placeholder="・1行目&#10;・2行目">'+esc(f.sub)+'</textarea>'
+        +'<textarea style="min-height:44px;font-size:10px" onchange="uF('+i+',\'sub\',this.value)" placeholder="・1行目&#10;・2行目">'+esc(f.sub)+'</textarea>'
         +'<div style="margin-top:5px;border-top:0.5px solid #eee;padding-top:5px">'
           +'<div style="font-size:9px;color:#888;margin-bottom:4px">この活動で評価をする場合は観点を選択</div>'
           +'<div>'+EVCOL_COLORS.map(function(col){
@@ -404,14 +387,14 @@ function formHTML(){
         +'<span class="'+(ok?'tok':'tov')+'">'+(used)+' / '+tot+' 分</span>'
       +'</div>'
       +'<div class="fg"><label>✎ 宿題・予習</label>'
-        +'<textarea style="min-height:38px" oninput="if(!_composing){u(\'yadai\',this.value)}" placeholder="・単語意味調べ">'+esc(D.yadai)+'</textarea>'
+        +'<textarea style="min-height:38px" onchange="u(\'yadai\',this.value)" placeholder="・単語意味調べ">'+esc(D.yadai)+'</textarea>'
       +'</div>'
       +'<div class="fg"><label>● 授業の流れ　<span style="font-size:9px;color:#aaa">（1行ずつサブ箇条書きを入力）</span></label>'
         +flowItems
         +'<button class="addb" onclick="addF()">＋ 活動を追加</button>'
       +'</div>'
       +'<div class="fg"><label>✎ 本日の課題・宿題</label>'
-        +'<textarea style="min-height:38px" oninput="if(!_composing){u(\'kadai\',this.value)}" placeholder="・新出単語の練習">'+esc(D.kadai)+'</textarea>'
+        +'<textarea style="min-height:38px" onchange="u(\'kadai\',this.value)" placeholder="・新出単語の練習">'+esc(D.kadai)+'</textarea>'
       +'</div>';
   }
 
@@ -420,12 +403,12 @@ function formHTML(){
       return '<div class="eb">'
         +'<div class="et" style="color:'+col.tc+'">'+col.lb+'</div>'
         +'<div class="fg"><label>評価規準（何ができるか）</label>'
-          +'<textarea style="min-height:38px" oninput="if(!_composing){uEv('+i+',\'kij\',this.value)}">'+esc(D.ev[i].kij)+'</textarea>'
+          +'<textarea style="min-height:38px" onchange="uEv('+i+',\'kij\',this.value)">'+esc(D.ev[i].kij)+'</textarea>'
         +'</div>'
         +'<div class="fg"><label>評価基準（どれくらいできるか）</label>'
           +'<div class="r2" style="margin-top:3px">'
-            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">A（十分満足）</div><textarea style="min-height:36px" oninput="if(!_composing){uEv('+i+',\'aK\',this.value)}">'+esc(D.ev[i].aK)+'</textarea></div>'
-            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">B（おおむね満足）</div><textarea style="min-height:36px" oninput="if(!_composing){uEv('+i+',\'bK\',this.value)}">'+esc(D.ev[i].bK)+'</textarea></div>'
+            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">A（十分満足）</div><textarea style="min-height:36px" onchange="uEv('+i+',\'aK\',this.value)">'+esc(D.ev[i].aK)+'</textarea></div>'
+            +'<div><div style="font-size:10px;color:#666;margin-bottom:3px">B（おおむね満足）</div><textarea style="min-height:36px" onchange="uEv('+i+',\'bK\',this.value)">'+esc(D.ev[i].bK)+'</textarea></div>'
           +'</div>'
         +'</div>'
         +evRyoField(i)
@@ -445,13 +428,16 @@ function formHTML(){
       +'<div style="font-size:32px;margin-bottom:6px;color:#0F6E56;text-align:center">✓</div>'
       +'<div style="font-size:14px;font-weight:500;color:#222;margin-bottom:2px;text-align:center">Side-B 完成！</div>'
       +'<div style="font-size:11px;color:#888;margin-bottom:18px;text-align:center">右側のプレビューを確認してください。</div>'
-      +'<button style="padding:10px 12px;font-size:12px;font-weight:500;background:#185FA5;color:#E6F1FB;border:none;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:8px;text-align:left" onclick="openFullscreen()">⛶　全画面で表示</button>'
+      +'<button style="padding:10px 12px;font-size:12px;font-weight:500;background:#185FA5;color:#E6F1FB;border:none;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:8px;text-align:left" onclick="openSheetOnly()">⛶　全画面で表示</button>'
       +'<button style="padding:10px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:8px;text-align:left" onclick="doPrint()">🖨　印刷する</button>'
-      +'<button style="padding:10px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:16px;text-align:left" onclick="doExportPDF()">📄　PDFで書き出す</button>'
-      +'<div style="font-size:10px;color:#666;font-weight:500;margin-bottom:6px;padding-bottom:4px;border-bottom:0.5px solid #eee">💾 データを保存する</div>'
+      +'<button style="padding:10px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:20px;text-align:left" onclick="doExportPDF()">📄　PDFで書き出す</button>'
+      +'<div style="height:0.5px;background:#eee;margin-bottom:16px"></div>'
+      +'<button style="padding:10px 12px;font-size:12px;font-weight:400;background:none;color:#534AB7;border:0.5px solid #534AB7;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:20px;text-align:left" onclick="openClockOnly()">🕐　授業で使う（時計ビュー）</button>'
+      +'<div style="height:0.5px;background:#eee;margin-bottom:16px"></div>'
+      +'<div style="font-size:10px;color:#666;font-weight:500;margin-bottom:6px">💾 データを保存する</div>'
       +'<button style="padding:8px 12px;font-size:12px;font-weight:400;background:none;color:#444;border:0.5px solid #ccc;border-radius:8px;cursor:pointer;display:block;width:100%;margin-bottom:6px;text-align:left" onclick="doSave()">💾　このデータを保存する（JSON）</button>'
       +'<div style="font-size:10px;color:#aaa;padding:0 2px;margin-bottom:16px">保存したJSONファイルはトップ画面から読み込んで再編集できます。</div>'
-      +'<button style="font-size:11px;padding:6px 12px;color:#888;border:0.5px solid #ddd;background:none;border-radius:8px;cursor:pointer;width:100%;margin-top:8px" onclick="goStep(0)">← 最初のステップに戻る</button>'
+      +'<button style="font-size:11px;padding:6px 12px;color:#888;border:0.5px solid #ddd;background:none;border-radius:8px;cursor:pointer;width:100%;margin-top:4px" onclick="goStep(0)">← 最初のステップに戻る</button>'
     +'</div>';
 
   return h;
@@ -740,19 +726,169 @@ function drawHyokaLines(){
 }
 
 // ===== FULLSCREEN =====
-function openFullscreen(){
+// ===== 全画面シート =====
+function openSheetOnly(){
   pvB();
   var wrap=document.getElementById('fs-pvb-wrap');
   wrap.innerHTML='';
   var clone=document.getElementById('pvb').cloneNode(true);
-  clone.style.transform='scale(1)';
-  clone.style.transformOrigin='top left';
   wrap.appendChild(clone);
-  document.getElementById('fs-overlay').style.display='flex';
-  fsTab('sheet');
+  document.getElementById('fs-sheet-overlay').style.display='flex';
 }
+function closeSheet(){
+  document.getElementById('fs-sheet-overlay').style.display='none';
+}
+
+// ===== 授業準備画面 =====
+function openClockOnly(){
+  // 開始時刻を D から読み込む
+  var sh=parseInt(D.startH)||9;
+  var sm=(D.startM===undefined||D.startM===null)?0:parseInt(D.startM)||0;
+  document.getElementById('prep-startH').value=sh;
+  document.getElementById('prep-startM').value=sm.toString().padStart(2,'0');
+
+  // 活動メモフィールドを生成
+  var FLOW_COLS_CK=[
+    {bg:'#E6F1FB',stroke:'#185FA5'},{bg:'#E1F5EE',stroke:'#0F6E56'},
+    {bg:'#EEEDFE',stroke:'#534AB7'},{bg:'#FAEEDA',stroke:'#854F0B'},
+    {bg:'#FAECE7',stroke:'#993C1D'},{bg:'#EAF3DE',stroke:'#27500A'},
+    {bg:'#FBEAF0',stroke:'#72243E'},{bg:'#E6F1FB',stroke:'#185FA5'}
+  ];
+  var flows=D.flow.filter(function(f){return f.t;});
+  // clockMemos を flows 数に合わせる
+  while(D.clockMemos.length < flows.length) D.clockMemos.push('');
+  var html=flows.map(function(f,i){
+    var col=FLOW_COLS_CK[i%FLOW_COLS_CK.length];
+    return '<div style="margin-bottom:12px">'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">'
+        +'<div style="width:20px;height:20px;border-radius:50%;background:'+col.stroke+';color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div>'
+        +'<div style="font-size:12px;font-weight:500;color:'+col.stroke+'">'+esc(f.t||'')+'</div>'
+        +(f.min?'<div style="font-size:11px;color:#aaa;margin-left:auto">'+f.min+'分</div>':'')
+      +'</div>'
+      +'<textarea id="memo-'+i+'" style="width:100%;min-height:52px;padding:6px 8px;border:0.5px solid #ddd;border-radius:6px;font-size:11px;resize:vertical;line-height:1.5" placeholder="メモ（板書計画・指示・気をつけること など）">'+esc(D.clockMemos[i]||'')+'</textarea>'
+    +'</div>';
+  }).join('');
+  document.getElementById('prep-memos').innerHTML=html;
+  document.getElementById('clock-prep').style.display='flex';
+}
+function closePrepClose(){
+  document.getElementById('clock-prep').style.display='none';
+}
+function savePrepAndGo(){
+  // 開始時刻を保存
+  D.startH=parseInt(document.getElementById('prep-startH').value)||9;
+  D.startM=parseInt(document.getElementById('prep-startM').value)||0;
+  // メモを保存
+  var flows=D.flow.filter(function(f){return f.t;});
+  flows.forEach(function(f,i){
+    var el=document.getElementById('memo-'+i);
+    if(el) D.clockMemos[i]=el.value;
+  });
+}
+
+// ===== 時計ビュー =====
+function openClockView(){
+  savePrepAndGo();
+  document.getElementById('clock-prep').style.display='none';
+  document.getElementById('clock-view').style.display='flex';
+  buildClock();
+  startClockTick();
+  // レジェンドを詳細パネルに変換
+  renderClockDetail(-1);
+}
+function closeClockView(){
+  document.getElementById('clock-view').style.display='none';
+  stopClockTick();
+}
+function backToPrep(){
+  stopClockTick();
+  document.getElementById('clock-view').style.display='none';
+  document.getElementById('clock-prep').style.display='flex';
+}
+
+// セグメントクリック: 詳細パネル更新
+function clockSegClick(idx){
+  renderClockDetail(idx);
+}
+function renderClockDetail(idx){
+  var FLOW_COLS_CK=[
+    {bg:'#E6F1FB',stroke:'#185FA5'},{bg:'#E1F5EE',stroke:'#0F6E56'},
+    {bg:'#EEEDFE',stroke:'#534AB7'},{bg:'#FAEEDA',stroke:'#854F0B'},
+    {bg:'#FAECE7',stroke:'#993C1D'},{bg:'#EAF3DE',stroke:'#27500A'},
+    {bg:'#FBEAF0',stroke:'#72243E'},{bg:'#E6F1FB',stroke:'#185FA5'}
+  ];
+  var flows=D.flow.filter(function(f){return f.t;});
+  var det=document.getElementById('ck-detail');
+  if(!det)return;
+  if(idx<0){
+    // 全リスト表示
+    var sh=parseInt(D.startH)||9, sm=(D.startM===undefined||D.startM===null)?0:parseInt(D.startM)||0;
+    var cur=sh*60+sm;
+    det.innerHTML='<div style="font-size:11px;color:#aaa;margin-bottom:12px">セグメントをクリックすると詳細が表示されます</div>'
+      +flows.map(function(f,i){
+        var m=parseInt(f.min)||0;
+        var col=FLOW_COLS_CK[i%FLOW_COLS_CK.length];
+        var st=(Math.floor(cur/60)%24).toString().padStart(2,'0')+':'+((cur%60)).toString().padStart(2,'0');
+        var en=(Math.floor((cur+m)/60)%24).toString().padStart(2,'0')+'：'+((cur+m)%60).toString().padStart(2,'0');
+        cur+=m;
+        return '<div onclick="clockSegClick('+i+')" style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;margin-bottom:4px">'
+          +'<div style="width:14px;height:14px;border-radius:3px;background:'+col.bg+';border:1.5px solid '+col.stroke+';flex-shrink:0;margin-top:2px"></div>'
+          +'<div><div style="font-size:13px;font-weight:500;color:'+col.stroke+'">'+esc(f.t||'')+'</div>'
+          +'<div style="font-size:10px;color:#888">'+st+' 〜 '+en+' （'+m+'分）</div></div>'
+        +'</div>';
+      }).join('');
+    return;
+  }
+  var f=flows[idx];
+  if(!f)return;
+  var m=parseInt(f.min)||0;
+  var col=FLOW_COLS_CK[idx%FLOW_COLS_CK.length];
+  var sh=parseInt(D.startH)||9, sm=(D.startM===undefined||D.startM===null)?0:parseInt(D.startM)||0;
+  var elapsed=0;
+  flows.slice(0,idx).forEach(function(ff){elapsed+=parseInt(ff.min)||0;});
+  var startTotal=sh*60+sm+elapsed;
+  var stStr=(Math.floor(startTotal/60)%24).toString().padStart(2,'0')+':'+((startTotal%60)).toString().padStart(2,'0');
+  var endTotal=startTotal+m;
+  var enStr=(Math.floor(endTotal/60)%24).toString().padStart(2,'0')+':'+((endTotal%60)).toString().padStart(2,'0');
+  var subs=(f.sub||'').split('\n').filter(function(l){return l.trim();});
+  var memo=D.clockMemos[idx]||'';
+  var hasEv=f.hyoka&&f.hyoka.length;
+  det.innerHTML=
+    '<div style="background:'+col.bg+';border-radius:12px;padding:16px 20px;margin-bottom:14px">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+        +'<div style="width:26px;height:26px;border-radius:50%;background:'+col.stroke+';color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(idx+1)+'</div>'
+        +'<div style="font-size:17px;font-weight:700;color:'+col.stroke+'">'+esc(f.t||'')+'</div>'
+        +(hasEv?'<span style="background:#222;color:#fff;font-size:10px;padding:2px 8px;font-weight:700;margin-left:4px">評価ポイント</span>':'')
+      +'</div>'
+      +'<div style="font-size:12px;color:'+col.stroke+';opacity:.8;margin-left:34px">'+stStr+' 〜 '+enStr+'　（'+m+'分）</div>'
+    +'</div>'
+    +(subs.length?'<div style="margin-bottom:14px">'
+      +'<div style="font-size:11px;color:#aaa;margin-bottom:6px;font-weight:500">活動内容</div>'
+      +subs.map(function(l){return '<div style="font-size:13px;color:#444;padding:3px 0;line-height:1.6">'+esc(l)+'</div>';}).join('')
+    +'</div>':'')
+    +(memo?'<div style="background:#FFFDE7;border-radius:8px;padding:12px 16px;margin-bottom:14px">'
+      +'<div style="font-size:11px;color:#E65100;font-weight:500;margin-bottom:4px">📝 メモ</div>'
+      +'<div style="font-size:13px;color:#444;line-height:1.7;white-space:pre-wrap">'+esc(memo)+'</div>'
+    +'</div>':'')
+    +(hasEv?'<div style="background:#FBEAF0;border-radius:8px;padding:12px 16px;">'
+      +'<div style="font-size:11px;color:#72243E;font-weight:500;margin-bottom:4px">本時の評価場面</div>'
+      +'<div style="font-size:13px;color:#72243E;">'+(f.hyoka||[]).join('・')+'</div>'
+    +'</div>':'')
+    +'<div style="margin-top:16px">'
+      +'<button onclick="renderClockDetail(-1)" style="font-size:11px;color:#888;background:none;border:0.5px solid #ddd;border-radius:6px;padding:5px 12px;cursor:pointer">← 一覧に戻る</button>'
+    +'</div>';
+}
+
+// 旧 openFullscreen / closeFullscreen / fsTab は削除
+function openFullscreen(){ openSheetOnly(); }
+function closeFullscreen(){ closeSheet(); }
+function fsTab(){}
+
+
 function closeFullscreen(){
   document.getElementById('fs-overlay').style.display='none';
+  document.getElementById('fst-sheet').style.display='';
+  document.getElementById('fst-clock').style.display='';
   stopClockTick();
 }
 function fsTab(t){
@@ -1180,14 +1316,6 @@ function updateNeedle(){
     +'<text x="'+(CX+Math.cos(a)*195)+'" y="'+(CY+Math.sin(a)*195)+'" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="#E24B4A" font-weight="bold" font-family="sans-serif">'+timeStr+'</text>';
 }
 
-function clockSegClick(idx){
-  // ハイライト
-  document.querySelectorAll('[id^=ckleg-]').forEach(function(el){
-    el.style.borderColor='transparent';el.style.background='';
-  });
-  var leg=document.getElementById('ckleg-'+idx);
-  if(leg){leg.style.borderColor='#534AB7';leg.style.background='#f5f4ff';leg.scrollIntoView({behavior:'smooth',block:'nearest'});}
-}
 
 function render(){
   document.getElementById('sbar').innerHTML=STS.map((s,i)=>'<div class="sd '+(i===D.step?'act':i<D.step?'dn':'')+'" onclick="goStep('+i+')" title="'+s.t+'">'+(i+1)+'</div>').join('');
@@ -1259,28 +1387,64 @@ function goStep(i){D.step=i;render();document.getElementById('fc').scrollTop=0;}
 render();
 </script>
 
-<div id="fs-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;flex-direction:column">
-  <!-- Header -->
-  <div style="display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #eee;flex-shrink:0;height:44px;gap:0">
-    <div id="fst-sheet" onclick="fsTab('sheet')" style="padding:0 16px;height:44px;display:flex;align-items:center;font-size:13px;cursor:pointer;border-bottom:2px solid #185FA5;font-weight:700;color:#185FA5">シートビュー</div>
-    <div id="fst-clock" onclick="fsTab('clock')" style="padding:0 16px;height:44px;display:flex;align-items:center;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;font-weight:400;color:#888">時計ビュー</div>
+<!-- ===== 全画面シート ===== -->
+<div id="fs-sheet-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;flex-direction:column">
+  <div style="display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #eee;flex-shrink:0;height:44px">
+    <div style="font-size:13px;font-weight:500;color:#222">れっすん・ぷらん　Side-B</div>
     <div style="flex:1"></div>
-    <button onclick="closeFullscreen()" style="padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:6px;background:none;cursor:pointer;color:#666">✕ 閉じる</button>
+    <button onclick="closeSheet()" style="padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:6px;background:none;cursor:pointer;color:#666">✕ 閉じる</button>
   </div>
-
-  <!-- Sheet view -->
-  <div id="fs-sheet" style="flex:1;overflow:auto;padding:20px;display:block;background:#f5f5f3">
-    <div id="fs-pvb-wrap" style="display:flex;justify-content:center"></div>
+  <div style="flex:1;overflow:auto;padding:20px;background:#f5f5f3;display:flex;justify-content:center;align-items:flex-start">
+    <div id="fs-pvb-wrap"></div>
   </div>
+</div>
 
-  <!-- Clock view -->
-  <div id="fs-clock" style="flex:1;display:none;flex-direction:row;overflow:hidden">
+<!-- ===== 授業準備画面 ===== -->
+<div id="clock-prep" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;flex-direction:column">
+  <div style="display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #eee;flex-shrink:0;height:44px">
+    <div style="font-size:13px;font-weight:500;color:#222">🕐 授業で使う</div>
+    <div style="flex:1"></div>
+    <button onclick="closePrepClose()" style="padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:6px;background:none;cursor:pointer;color:#666">✕ 閉じる</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px;max-width:600px;margin:0 auto;width:100%">
+    <div style="font-size:11px;color:#888;margin-bottom:16px">時計ビューを表示する前に設定してください。</div>
+
+    <!-- 授業開始時刻 -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:500;color:#333;margin-bottom:6px">授業開始時刻</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" id="prep-startH" min="0" max="23" style="width:56px;text-align:center;font-size:18px;padding:6px 4px;border:0.5px solid #ccc;border-radius:6px">
+        <span style="font-size:16px;color:#555;font-weight:500">:</span>
+        <input type="number" id="prep-startM" min="0" max="59" style="width:56px;text-align:center;font-size:18px;padding:6px 4px;border:0.5px solid #ccc;border-radius:6px">
+      </div>
+    </div>
+
+    <!-- 活動ごとのメモ -->
+    <div style="font-size:12px;font-weight:500;color:#333;margin-bottom:8px">各活動へのメモ（任意）</div>
+    <div id="prep-memos"></div>
+
+    <button onclick="openClockView()" style="margin-top:20px;padding:14px 16px;width:100%;background:#534AB7;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer">時計ビューで表示 →</button>
+  </div>
+</div>
+
+<!-- ===== 時計ビュー ===== -->
+<div id="clock-view" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;flex-direction:column">
+  <div style="display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #eee;flex-shrink:0;height:44px">
+    <button onclick="backToPrep()" style="padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:6px;background:none;cursor:pointer;color:#666">← 戻る</button>
+    <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:#222">🕐 時計ビュー</div>
+    <button onclick="closeClockView()" style="padding:6px 14px;font-size:12px;border:0.5px solid #ccc;border-radius:6px;background:none;cursor:pointer;color:#666">✕</button>
+  </div>
+  <div style="flex:1;display:flex;overflow:hidden">
+    <!-- 左: 円グラフ -->
     <div style="flex:0 0 520px;display:flex;align-items:center;justify-content:center;padding:20px;border-right:1px solid #eee">
       <svg id="ck-svg" width="480" height="480" viewBox="0 0 480 480"></svg>
     </div>
-    <div style="flex:1;overflow-y:auto;padding:16px 20px">
-      <div style="font-size:12px;color:#aaa;margin-bottom:10px">セグメントをクリックすると詳細が表示されます</div>
-      <div id="ck-legend" style="display:flex;flex-direction:column;gap:4px"></div>
+    <!-- 右: 選択セクション詳細 -->
+    <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column">
+      <div id="ck-detail" style="flex:1">
+        <div style="font-size:12px;color:#aaa;margin-bottom:12px">セグメントをクリックすると詳細が表示されます</div>
+        <div id="ck-legend" style="display:flex;flex-direction:column;gap:4px"></div>
+      </div>
     </div>
   </div>
 </div>

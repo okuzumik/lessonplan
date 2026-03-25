@@ -126,32 +126,38 @@ var FTCOLS=['#0C447C','#085041','#3C3489','#633806','#712B13','#27500A','#72243E
 
 var SAMPLE_D={
   step:0,
-  gakko:'中学校',gakunen:'1',kamoku:'英語科',kyozai:'New Crown 1 Lesson5',
-  nen:'2024',tsuki:'10',hi:'21',yobi:'木',jigen:'3',jusho:'山田 太郎',seito:'35',schedCount:8,
+  gakko:'中学校',gakunen:'1',kamoku:'英語科',kyozai:'New Crown 1 Lesson 5',
+  nen:'2026',tsuki:'9',hi:'8',yobi:'火',jigen:'3',jusho:'山田 太郎',seito:'35',schedCount:8,
   eigoFlag:true,
-  totalTime:50,startH:9,startM:45,kodawari:'意図を持った指名をする！',
-  tMok:'自分の学校を紹介するために、学校生活や行事について事実や自分の考え・気持ちなどを整理し、簡単な語句や文を用いてまとまりのある文章を書いている。',
-  tObs:['思考・判断・表現'],tRyo:['書くこと'],
-  sched:Array.from({length:8},(_,i)=>({
-    ji:i+1,
-    nai:['Get 1 現在進行形','Get 2 疑問文','USE Read 説明文','USE Write メール','LISTEN3 映画の紹介','TALK3 青いTシャツ','GET Plus 4','Lesson5まとめ'][i],
-    ch:i<5,sh:i>=3,su:i>=3,ima:i===2
-  })),
-  hMok:'現在進行形の肯定文を使って、絵を描写しよう！',
-  hObs:['知識・技能'],hRyo:['書くこと','話すこと〔発表〕'],
-  yadai:'・単語意味調べワークシートを埋めてくる',
-  flow:[
-    {t:'あいさつ＆Small Talk',sub:'・英語で挨拶をする',min:5,hyoka:[]},
-    {t:'レッスンの新出単語',sub:'・文字と音をつなげる',min:5,hyoka:[]},
-    {t:'導入',sub:'・ジャイアンからのLINEメッセージを読む',min:5,hyoka:[]},
-    {t:'説明①（原時英語で）',sub:'・ing形の確認\n・be動詞の選択\n・現在形との違い',min:10,hyoka:[]},
-    {t:'練習',sub:'・全体でパタンプラクティス（動詞のing確認・発音解説）\n・全体→ペアで絵を描写練習（6枚→誰のことかを当てる）',min:15,hyoka:['知識・技能']},
-    {t:'活動・まとめ・あいさつ',sub:'・ジャイアンへのLINE返信を考える\n・グループ/全体シェア',min:10,hyoka:['思考・判断・表現']}
+  totalTime:50,startH:9,startM:45,kodawari:'・苦手な生徒が書けているかをしっかり見取る',
+  tMok:'海外からの旅行者に町や地域を訪れてもらうために、おすすめの場所やイベントについて、複数の詳しい情報をつけ加えながら、まとまりのある内容を話すことができる。',
+  tObs:['思考・判断・表現'],tRyo:['話すこと〔やり取り〕'],
+  sched:[
+    {ji:1,nai:'Part 1（pp.57-58）',ch:true, sh:false,su:false,ima:true},
+    {ji:2,nai:'Part 1（p.59）',    ch:true, sh:false,su:false,ima:false},
+    {ji:3,nai:'Part 2（p.60）',    ch:true, sh:false,su:false,ima:false},
+    {ji:4,nai:'Part2 （p.61）',    ch:true, sh:false,su:false,ima:false},
+    {ji:5,nai:'Side Story',        ch:true, sh:false,su:false,ima:false},
+    {ji:6,nai:'Small Talk Plus',   ch:false,sh:true, su:true, ima:false},
+    {ji:7,nai:'Goal Activity',     ch:true, sh:true, su:true, ima:false},
+    {ji:8,nai:'Goal Activity',     ch:true, sh:true, su:true, ima:false}
   ],
-  kadai:'・レッスンの新出単語の練習（文字→発音）',
+  hMok:'SVOOを活用し、誕生日に贈るものについて話したり書いたりすることができる。',
+  hObs:['知識・技能'],hRyo:['書くこと'],
+  yadai:'・特になし',
+  flow:[
+    {t:'あいさつ＆Small Talk',sub:'・英語で挨拶をする\n・旅行についてのALTの話を聞く',min:5,hyoka:[]},
+    {t:'英語の歌',sub:'・I want it that wayを歌う\n・発音（リンキング）の確認',min:5,hyoka:[]},
+    {t:'Scene 1（リスニング）',sub:'・場面設定の確認\n・音声を聞き、問いの答えを確認する\n・Pointを確認する',min:5,hyoka:[]},
+    {t:'Exercise（Listen）',sub:'・Listenを行う\n・新出単語の確認\n・Talkを行う',min:10,hyoka:[]},
+    {t:'Exercise（Talk）',sub:'・全体で練習→ペア\n・プレゼントを選んだ理由も考えさせる',min:10,hyoka:[]},
+    {t:'話したことを書く',sub:'・Talkで話したことを英語で書く（オンライン）\n・グループで読み合う',min:10,hyoka:['知識・技能']},
+    {t:'まとめ・あいさつ',sub:'・面白い作文の共有\n・振り返りの記入',min:5,hyoka:[]}
+  ],
+  kadai:'・友達の作文（オンライン）を5つ読んでコメントを書く',
   ev:[
-    {kij:'現在進行形の肯定文の特徴やきまりに関する事項を理解している。',aK:'6枚すべての絵について正しい英文が書けている。',bK:'3〜5枚の絵について正しい英文が書けている。',ryo:['書くこと']},
-    {kij:'絵の特徴を捉え、現在進行形を用いて相手に伝わるよう工夫して描写している。',aK:'聞き手の反応を見て表現を調整できる。',bK:'絵の主な特徴を現在進行形で説明できる。',ryo:['話すこと〔発表〕']},
+    {kij:'SVOOを使って誕生日に贈るものについて英文を書くことができる。（成果物で授業後に評価）',aK:'SVOOを使った文を活用し、（理由なども含めて）まとまった内容の英文が書けている。',bK:'SVOOを使った文を活用し、英文が書けている。',ryo:['書くこと']},
+    {kij:'',aK:'',bK:'',ryo:[]},
     {kij:'',aK:'',bK:'',ryo:[]}
   ],
   evType:'kei',
@@ -161,23 +167,45 @@ var SAMPLE_D={
 
 var D={
   step:0,
-  gakko:'',gakunen:'',kamoku:'',kyozai:'',
-  nen:'',tsuki:'',hi:'',yobi:'',jigen:'',jusho:'',seito:'',
-  eigoFlag:false,
-  totalTime:50,kodawari:'',
-  tMok:'',tObs:[],tRyo:[],
+  gakko:'中学校',gakunen:'1',kamoku:'英語科',kyozai:'New Crown 1 Lesson 5',
+  nen:'2026',tsuki:'9',hi:'8',yobi:'火',jigen:'3',jusho:'山田 太郎',seito:'35',
+  eigoFlag:true,
+  startH:9,startM:45,
+  totalTime:50,kodawari:'・苦手な生徒が書けているかをしっかり見取る',
+  tMok:'海外からの旅行者に町や地域を訪れてもらうために、おすすめの場所やイベントについて、複数の詳しい情報をつけ加えながら、まとまりのある内容を話すことができる。',
+  tObs:['思考・判断・表現'],tRyo:['話すこと〔やり取り〕'],
   schedCount:8,
-  sched:Array.from({length:8},function(_,i){return {ji:i+1,nai:'',ch:false,sh:false,su:false,ima:false};}),
-  hMok:'',hObs:[],hRyo:[],
-  yadai:'',
-  flow:[{t:'',sub:'',min:5,hyoka:[]}],
-  kadai:'',
+  sched:[
+    {ji:1,nai:'Part 1（pp.57-58）',ch:true, sh:false,su:false,ima:true},
+    {ji:2,nai:'Part 1（p.59）',    ch:true, sh:false,su:false,ima:false},
+    {ji:3,nai:'Part 2（p.60）',    ch:true, sh:false,su:false,ima:false},
+    {ji:4,nai:'Part2 （p.61）',    ch:true, sh:false,su:false,ima:false},
+    {ji:5,nai:'Side Story',        ch:true, sh:false,su:false,ima:false},
+    {ji:6,nai:'Small Talk Plus',   ch:false,sh:true, su:true, ima:false},
+    {ji:7,nai:'Goal Activity',     ch:true, sh:true, su:true, ima:false},
+    {ji:8,nai:'Goal Activity',     ch:true, sh:true, su:true, ima:false}
+  ],
+  hMok:'SVOOを活用し、誕生日に贈るものについて話したり書いたりすることができる。',
+  hObs:['知識・技能'],hRyo:['書くこと'],
+  yadai:'・特になし',
+  flow:[
+    {t:'あいさつ＆Small Talk',sub:'・英語で挨拶をする\n・旅行についてのALTの話を聞く',min:5,hyoka:[]},
+    {t:'英語の歌',sub:'・I want it that wayを歌う\n・発音（リンキング）の確認',min:5,hyoka:[]},
+    {t:'Scene 1（リスニング）',sub:'・場面設定の確認\n・音声を聞き、問いの答えを確認する\n・Pointを確認する',min:5,hyoka:[]},
+    {t:'Exercise（Listen）',sub:'・Listenを行う\n・新出単語の確認\n・Talkを行う',min:10,hyoka:[]},
+    {t:'Exercise（Talk）',sub:'・全体で練習→ペア\n・プレゼントを選んだ理由も考えさせる',min:10,hyoka:[]},
+    {t:'話したことを書く',sub:'・Talkで話したことを英語で書く（オンライン）\n・グループで読み合う',min:10,hyoka:['知識・技能']},
+    {t:'まとめ・あいさつ',sub:'・面白い作文の共有\n・振り返りの記入',min:5,hyoka:[]}
+  ],
+  kadai:'・友達の作文（オンライン）を5つ読んでコメントを書く',
   ev:[
-    {kij:'',aK:'',bK:'',ryo:[]},
+    {kij:'SVOOを使って誕生日に贈るものについて英文を書くことができる。（成果物で授業後に評価）',aK:'SVOOを使った文を活用し、（理由なども含めて）まとまった内容の英文が書けている。',bK:'SVOOを使った文を活用し、英文が書けている。',ryo:['書くこと']},
     {kij:'',aK:'',bK:'',ryo:[]},
     {kij:'',aK:'',bK:'',ryo:[]}
   ],
-  evType:'kei'
+  evType:'kei',
+  jikoHyoka:'',
+  clockMemos:[]
 }
 
 var STS=[

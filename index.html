@@ -1115,7 +1115,8 @@ function hideClockView(){
 
 var _clockTick=null;
 function startClockTick(){
-  updateNeedle();
+  if(_clockTick){clearInterval(_clockTick);_clockTick=null;}
+  buildClock(); // SVGを確実に描画してから針のタイマーを開始
   _clockTick=setInterval(updateNeedle,1000);
 }
 function stopClockTick(){if(_clockTick){clearInterval(_clockTick);_clockTick=null;}}
@@ -1271,7 +1272,9 @@ function buildClock(){
     svg+='<g id="ck-needle"></g>';
   }
 
-  document.getElementById('ck-svg').innerHTML=svg;
+  var svgEl=document.getElementById('ck-svg');
+  if(!svgEl)return;
+  svgEl.innerHTML=svg;
 
   // レジェンド（共通）
   var leg='';
@@ -1291,7 +1294,8 @@ function buildClock(){
     +'</div>';
     cur2+=m;
   });
-  document.getElementById('ck-legend').innerHTML=leg;
+  var legEl=document.getElementById('ck-legend');
+  if(legEl)legEl.innerHTML=leg;
   updateNeedle();
 }
 
@@ -1310,37 +1314,50 @@ function describeArc(cx,cy,ro,ri,startDeg,endDeg){
 
 function updateNeedle(){
   var svg=document.getElementById('ck-svg');
-  if(!svg)return;
-  var g=document.getElementById('ck-needle');
-  if(!g){
-    g=document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.id='ck-needle';
-    svg.appendChild(g);
-  }
-  var now=new Date();
+  if(!svg||!svg.parentNode)return;
+  // SVGが空（buildClock未実行）なら針だけ追加しても意味がないので何もしない
+  if(!svg.querySelector('[id]'))return;
+  // 古い針を削除して毎回新規作成（innerHTML不使用）
+  var old=document.getElementById('ck-needle');
+  if(old) old.parentNode.removeChild(old);
+  var NS='http://www.w3.org/2000/svg';
+  var g=document.createElementNS(NS,'g');
+  g.id='ck-needle';
   var CX=240,CY=240;
   var tot=parseInt(D.totalTime)||50;
   var startH=parseInt(D.startH)||9;
   var startM=(D.startM===undefined||D.startM===null)?0:parseInt(D.startM)||0;
+  var now=new Date();
   var a;
   if(tot<=60){
-    // 時計モード: 現在の分で針を動かす
     var m=now.getMinutes()+now.getSeconds()/60;
     a=degToRad((m/60)*360-90);
   } else {
-    // 比率モード: 授業開始からの経過時間で針を動かす
     var nowMins=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
-    var startTotalMins=startH*60+startM;
-    var elapsed=nowMins-startTotalMins;
-    if(elapsed<0) elapsed=0;
-    if(elapsed>tot) elapsed=tot;
+    var startTotal=startH*60+startM;
+    var elapsed=nowMins-startTotal;
+    if(elapsed<0)elapsed=0; if(elapsed>tot)elapsed=tot;
     a=degToRad((elapsed/tot)*360-90);
   }
+  var x2=CX+Math.cos(a)*170, y2=CY+Math.sin(a)*170;
+  var tx=CX+Math.cos(a)*195, ty=CY+Math.sin(a)*195;
   var timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  g.innerHTML=
-    '<line x1="'+CX+'" y1="'+CY+'" x2="'+(CX+Math.cos(a)*170)+'" y2="'+(CY+Math.sin(a)*170)+'" stroke="#E24B4A" stroke-width="2.5" stroke-linecap="round"/>'
-    +'<circle cx="'+CX+'" cy="'+CY+'" r="5" fill="#E24B4A"/>'
-    +'<text x="'+(CX+Math.cos(a)*195)+'" y="'+(CY+Math.sin(a)*195)+'" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="#E24B4A" font-weight="bold" font-family="sans-serif">'+timeStr+'</text>';
+  var line=document.createElementNS(NS,'line');
+  line.setAttribute('x1',CX); line.setAttribute('y1',CY);
+  line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+  line.setAttribute('stroke','#E24B4A'); line.setAttribute('stroke-width','2.5');
+  line.setAttribute('stroke-linecap','round');
+  var dot=document.createElementNS(NS,'circle');
+  dot.setAttribute('cx',CX); dot.setAttribute('cy',CY);
+  dot.setAttribute('r','5'); dot.setAttribute('fill','#E24B4A');
+  var txt=document.createElementNS(NS,'text');
+  txt.setAttribute('x',tx); txt.setAttribute('y',ty);
+  txt.setAttribute('text-anchor','middle'); txt.setAttribute('dominant-baseline','middle');
+  txt.setAttribute('font-size','9'); txt.setAttribute('fill','#E24B4A');
+  txt.setAttribute('font-weight','bold'); txt.setAttribute('font-family','sans-serif');
+  txt.textContent=timeStr;
+  g.appendChild(line); g.appendChild(dot); g.appendChild(txt);
+  svg.appendChild(g);
 }
 
 
